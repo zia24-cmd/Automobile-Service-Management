@@ -3,937 +3,843 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoPro Service Hub | Workshop Management</title>
 
-    <title>AutoPro | Service Management</title>
-
+    <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="style.css">
-
+    <!-- Chart.js for Unboxed Data Viz -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="logo-mark.png">
+
+    <!-- Stylesheet adhering to Customer.io style guide -->
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<div class="app">
+<div class="app-container">
 
     <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar">
-
-        <div class="brand">
-            <div class="brand-mark">A</div>
-
-            <div>
-                <strong>AutoPro</strong>
-                <span>Service Hub</span>
-            </div>
+        
+        <!-- Workspace Brand Header (Logo on top, name below logo) -->
+        <div class="sidebar-brand-header">
+            <img src="logo.png" alt="AutoPro Hub" class="sidebar-logo">
         </div>
 
-        <nav>
+        <!-- Navigation Sections -->
+        <nav class="sidebar-nav">
+            
+            <div class="nav-section">
+                <button class="nav-item active" data-page="dashboard">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                    <span>Home</span>
+                </button>
+            </div>
 
-            <button class="nav active" data-page="dashboard">
-                <span>⌂</span>
-                Dashboard
-            </button>
+            <div class="nav-section">
+                <div class="nav-section-title">OPERATIONS</div>
+                
+                <button class="nav-item" data-page="appointments">
+                    <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    <span>Appointments</span>
+                    <span class="nav-badge" id="navBadgeAppts">5</span>
+                </button>
 
-            <button class="nav" data-page="appointments">
-                <span>▣</span>
-                Appointments
-            </button>
+                <button class="nav-item" data-page="vehicles">
+                    <svg viewBox="0 0 24 24" fill="none"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+                    <span>Garage</span>
+                </button>
 
-            <button class="nav" data-page="vehicles">
-                <span>▱</span>
-                Vehicles
-            </button>
+                <button class="nav-item" data-page="services">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
+                    <span>Services</span>
+                </button>
+            </div>
 
-            <button class="nav" data-page="customers">
-                <span>♙</span>
-                Customers
-            </button>
+            <div class="nav-section">
+                <div class="nav-section-title">MANAGEMENT</div>
 
-            <button class="nav" data-page="mechanics">
-                <span>⚙</span>
-                Technicians
-            </button>
+                <button class="nav-item" data-page="customers">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                    <span>Customers</span>
+                </button>
 
-            <button class="nav" data-page="services">
-                <span>◆</span>
-                Services
-            </button>
+                <button class="nav-item" data-page="mechanics">
+                    <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                    <span>Technicians</span>
+                </button>
 
-            <button class="nav" data-page="invoices">
-                <span>▤</span>
-                Invoices
-            </button>
+                <button class="nav-item" data-page="invoices">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                    <span>Invoices</span>
+                </button>
+            </div>
 
-            <button class="nav" data-page="reports">
-                <span>◔</span>
-                Reports
-            </button>
+            <div class="nav-section">
+                <div class="nav-section-title">INSIGHTS</div>
+
+                <button class="nav-item" data-page="reports">
+                    <svg viewBox="0 0 24 24" fill="none"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                    <span>Reports</span>
+                </button>
+
+                <button class="nav-item" data-page="settings">
+                    <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                    <span>Settings</span>
+                </button>
+            </div>
 
         </nav>
 
-        <div class="sidebar-bottom">
-
-            <div class="storage">
-                <span class="dot"></span>
-
-                <div>
-                    <b>Local database</b>
-                    <small>Auto-saved in browser</small>
-                </div>
+        <!-- Sidebar Footer -->
+        <div class="sidebar-footer">
+            <div class="sync-status">
+                <span class="status-dot"></span>
+                <span>Workshop Online · DB Synced</span>
             </div>
-
-            <button class="nav" data-page="settings">
-                <span>⚙</span>
-                Settings
-            </button>
-
         </div>
 
     </aside>
 
+    <!-- Mobile Drawer Backdrop -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
-    <!-- MAIN -->
-    <main class="main">
+    <!-- MAIN WRAPPER -->
+    <main class="main-wrapper">
 
-        <!-- TOP BAR -->
+        <!-- TOPBAR -->
         <header class="topbar">
-
-            <button class="menu-btn" id="menuBtn">☰</button>
-
-            <div>
-                <h1 id="pageTitle">Dashboard</h1>
-                <p id="pageSub">
-                    Workshop overview and today's operations
-                </p>
+            
+            <div class="topbar-left">
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                </button>
             </div>
 
-            <div class="top-actions">
+            <!-- Search Pill with shortcut -->
+            <div class="topbar-search">
+                <span class="search-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                </span>
+                <input type="text" id="globalSearchInput" class="search-input" placeholder="Search plates, customers, services...">
+                <span class="search-shortcut">⌘ K</span>
+            </div>
 
-                <div class="search">
-                    <span>⌕</span>
-                    <input id="globalSearch" placeholder="Search...">
+            <!-- Topbar Actions -->
+            <div class="topbar-actions">
+                <button class="help-link" id="helpBtn" data-open="helpModal">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                    <span>Need help?</span>
+                </button>
+
+                <div class="notifications-wrapper">
+                    <button class="topbar-icon-btn" id="notificationsBtn" title="Alerts">
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                        <span class="notification-badge" id="notifBadge"></span>
+                    </button>
+                    <!-- Notifications Dropdown -->
+                    <div class="notifications-dropdown" id="notificationsDropdown">
+                        <div class="notif-header">
+                            <span class="notif-title">Workshop Alerts</span>
+                            <button class="notif-clear-btn" id="clearNotifsBtn">Mark all read</button>
+                        </div>
+                        <div class="notif-list" id="notifList"></div>
+                    </div>
                 </div>
 
-                <button class="icon-btn" id="refreshBtn">
-                    ↻
-                </button>
-
-                <button class="profile">
-                    <span>MA</span>
-
-                    <div>
-                        <b>Manager</b>
-                        <small>Administrator</small>
-                    </div>
-                </button>
-
+                <div class="user-profile-btn" title="Admin Account">
+                    <div class="avatar-initials">AR</div>
+                </div>
             </div>
 
         </header>
 
 
-        <section class="content">
-
-
-            <!-- DASHBOARD -->
-            <section class="page active" id="page-dashboard">
-
-                <div class="welcome">
-
-                    <div>
-                        <span class="eyebrow">
-                            WORKSHOP OVERVIEW
-                        </span>
-
-                        <h2>
-                            Good day, Manager 👋
-                        </h2>
-
-                        <p>
-                            Here is what's happening in your workshop today.
-                        </p>
-                    </div>
-
-                    <button class="primary" data-open="appointmentModal">
-                        ＋ New Appointment
-                    </button>
-
+        <!-- ================================================================ -->
+        <!-- DASHBOARD VIEW (Asymmetric Layout matching Customer.io)         -->
+        <!-- ================================================================ -->
+        <div class="page-container active" id="page-dashboard">
+            
+            <!-- Unboxed Greeting (Icon square + bold text, no card border) -->
+            <div class="dashboard-greeting">
+                <div class="greeting-icon-box">
+                    <svg viewBox="0 0 24 24" fill="none"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
                 </div>
-
-
-                <!-- STATISTICS -->
-                <div class="stats">
-
-                    <div class="stat">
-
-                        <div class="stat-icon orange">
-                            ▣
-                        </div>
-
-                        <div>
-                            <span>Total Jobs</span>
-                            <b id="statTotal">0</b>
-                            <small>All appointments</small>
-                        </div>
-
-                    </div>
-
-
-                    <div class="stat">
-
-                        <div class="stat-icon green">
-                            ✓
-                        </div>
-
-                        <div>
-                            <span>Completed</span>
-                            <b id="statCompleted">0</b>
-                            <small>Finished jobs</small>
-                        </div>
-
-                    </div>
-
-
-                    <div class="stat">
-
-                        <div class="stat-icon blue">
-                            ◷
-                        </div>
-
-                        <div>
-                            <span>In Progress</span>
-                            <b id="statProgress">0</b>
-                            <small>Currently servicing</small>
-                        </div>
-
-                    </div>
-
-
-                    <div class="stat">
-
-                        <div class="stat-icon purple">
-                            ₹
-                        </div>
-
-                        <div>
-                            <span>Total Revenue</span>
-                            <b id="statRevenue">₹0</b>
-                            <small>Completed jobs</small>
-                        </div>
-
-                    </div>
-
+                <div class="greeting-text">
+                    <h1 id="dashboardGreetingTitle">Evening, Workshop Manager!</h1>
+                    <p id="dashboardGreetingSub">5 vehicles active in shop today · 3 technicians currently assigned.</p>
                 </div>
+            </div>
 
+            <!-- Asymmetric Grid Split (Main Column + Right Activity Rail) -->
+            <div class="dashboard-grid">
+                
+                <!-- Main Operations Column -->
+                <div class="dashboard-main-col">
+                    
+                    <!-- 1. "Ready to keep going?" Task Cards Row -->
+                    <div class="dashboard-section">
+                        <div class="section-title-row">
+                            <span class="section-title">Ready to keep going?</span>
+                        </div>
+                        <div class="task-cards-row" id="quickTaskCards">
+                            <!-- Populated dynamically: 3 bordered cards, 10px radius, NO shadow -->
+                        </div>
+                    </div>
 
-                <!-- CHART + TODAY -->
-                <div class="grid-2">
+                    <!-- 2. Unboxed Data Viz (Bar Chart) -->
+                    <div class="chart-unboxed-section">
+                        <div class="chart-header-row">
+                            <span class="section-title">How is your workshop doing?</span>
+                            <a href="#analysis" class="section-link" id="chartRangeToggle">
+                                <span>Last 7 Days throughput</span>
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            </a>
+                        </div>
+                        <div class="chart-canvas-wrap">
+                            <canvas id="throughputChart"></canvas>
+                        </div>
+                    </div>
 
-                    <div class="panel">
+                    <!-- 3. "What should we work on?" Action Cards Row (One has left-border accent) -->
+                    <div class="dashboard-section">
+                        <div class="section-title-row">
+                            <span class="section-title">What should we work on?</span>
+                        </div>
+                        <div class="action-cards-row">
+                            
+                            <!-- Card 1: Highlighted with single left accent border -->
+                            <div class="action-card highlight-card" data-action="filter-scheduled">
+                                <div class="action-card-header">
+                                    <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                    <span>Dispatch pending jobs</span>
+                                </div>
+                                <p class="action-card-desc">Review 2 appointments waiting for bay allocation and assign an available technician.</p>
+                            </div>
 
-                        <div class="panel-head">
+                            <!-- Card 2: Standard subtle border -->
+                            <div class="action-card" data-action="view-invoices">
+                                <div class="action-card-header">
+                                    <svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                                    <span>Audit unpaid invoices</span>
+                                </div>
+                                <p class="action-card-desc">Reconcile pending payments for completed deliveries before closing today's ledger.</p>
+                            </div>
 
-                            <div>
-                                <h3>Service Activity</h3>
-                                <span>Appointments over the last 7 days</span>
+                            <!-- Card 3: Standard subtle border -->
+                            <div class="action-card" data-action="open-vehicle-modal">
+                                <div class="action-card-header">
+                                    <svg viewBox="0 0 24 24" fill="none"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+                                    <span>Register new customer vehicle</span>
+                                </div>
+                                <p class="action-card-desc">Quickly record intake details, mileage, fuel type, and inspection notes for incoming clients.</p>
                             </div>
 
                         </div>
-
-                        <div class="chart-wrap">
-                            <canvas id="serviceChart"></canvas>
-                        </div>
-
-                    </div>
-
-
-                    <div class="panel">
-
-                        <div class="panel-head">
-
-                            <div>
-                                <h3>Today's Schedule</h3>
-                                <span id="todaySub">
-                                    0 appointments
-                                </span>
-                            </div>
-
-                            <button
-                                class="link-btn"
-                                data-page-link="appointments">
-                                View all →
-                            </button>
-
-                        </div>
-
-                        <div id="todayList" class="schedule-list"></div>
-
                     </div>
 
                 </div>
 
+                <!-- Right Rail: Completely Unboxed Activity Feed -->
+                <div class="dashboard-right-rail">
+                    
+                    <div class="rail-section-title">What's your team up to?</div>
+                    
+                    <div class="activity-feed-list" id="activityFeedList">
+                        <!-- Populated dynamically with avatar + action + timestamp -->
+                    </div>
 
-                <!-- RECENT -->
-                <div class="panel">
-
-                    <div class="panel-head">
-
+                    <!-- Rail Easter-Egg Widget (thin border, no shadow) -->
+                    <div class="rail-widget-box">
                         <div>
-                            <h3>Recent Appointments</h3>
-                            <span>Latest workshop activity</span>
+                            <span class="widget-label">WORKSHOP STATUS</span>
+                            <span class="widget-subtext" id="bayStatusSubtext">All 4 hydraulic lift bays operational</span>
                         </div>
-
-                    </div>
-
-                    <div class="table-scroll">
-
-                        <table>
-
-                            <thead>
-
-                            <tr>
-                                <th>Customer</th>
-                                <th>Vehicle</th>
-                                <th>Service</th>
-                                <th>Technician</th>
-                                <th>Date</th>
-                                <th>Status</th>
-                                <th>Amount</th>
-                            </tr>
-
-                            </thead>
-
-                            <tbody id="recentTable"></tbody>
-
-                        </table>
-
+                        <div class="status-dot" style="background: var(--accent-green); width: 8px; height: 8px;" title="Operational"></div>
                     </div>
 
                 </div>
 
-            </section>
+            </div>
+
+        </div>
 
 
-            <!-- APPOINTMENTS -->
-            <section class="page" id="page-appointments">
-
-                <div class="section-head">
-
-                    <div>
-                        <h2>Appointments</h2>
-                        <p>Schedule and manage service jobs.</p>
-                    </div>
-
-                    <button class="primary" data-open="appointmentModal">
-                        ＋ Add Appointment
+        <!-- ================================================================ -->
+        <!-- APPOINTMENTS VIEW                                                -->
+        <!-- ================================================================ -->
+        <div class="page-container" id="page-appointments">
+            
+            <div class="page-header">
+                <div>
+                    <h2>Service Appointments</h2>
+                    <p>Track workshop schedule, technician allocations, and service progress.</p>
+                </div>
+                <div class="header-actions">
+                    <button class="primary-pill-btn" data-open="appointmentModal">
+                        <svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        <span>Book Appointment</span>
                     </button>
-
                 </div>
+            </div>
 
-
-                <div class="toolbar">
-
-                    <div class="search wide">
-                        ⌕
-                        <input
-                            id="appointmentSearch"
-                            placeholder="Search customer, vehicle or service...">
-                    </div>
-
-                    <select id="appointmentFilter">
-
-                        <option value="">
-                            All statuses
-                        </option>
-
-                        <option>Scheduled</option>
-                        <option>In Progress</option>
-                        <option>Completed</option>
-                        <option>Cancelled</option>
-
-                    </select>
-
+            <div class="filter-bar">
+                <div class="filter-pills" id="appointmentStatusFilters">
+                    <button class="filter-chip active" data-filter="All">All Jobs</button>
+                    <button class="filter-chip" data-filter="Scheduled">Scheduled</button>
+                    <button class="filter-chip" data-filter="In Progress">In Progress</button>
+                    <button class="filter-chip" data-filter="Completed">Completed</button>
+                    <button class="filter-chip" data-filter="Cancelled">Cancelled</button>
                 </div>
-
-
-                <div class="panel">
-
-                    <div class="table-scroll">
-
-                        <table>
-
-                            <thead>
-
-                            <tr>
-                                <th>Customer</th>
-                                <th>Vehicle</th>
-                                <th>Service</th>
-                                <th>Date / Time</th>
-                                <th>Technician</th>
-                                <th>Status</th>
-                                <th>Update</th>
-                            </tr>
-
-                            </thead>
-
-                            <tbody id="appointmentTable"></tbody>
-
-                        </table>
-
-                    </div>
-
+                <div class="search-wrap">
+                    <input type="text" id="appointmentSearch" class="form-input" placeholder="Filter by customer or plate..." style="width: 240px; height: 30px;">
                 </div>
+            </div>
 
-            </section>
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Customer</th>
+                            <th>Vehicle</th>
+                            <th>Service Package</th>
+                            <th>Assigned Tech</th>
+                            <th>Date & Time</th>
+                            <th>Status</th>
+                            <th>Estimated</th>
+                            <th>Quick Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="appointmentsTableBody">
+                        <!-- Populated dynamically -->
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
 
 
-            <!-- VEHICLES -->
-            <section class="page" id="page-vehicles">
-
-                <div class="section-head">
-
-                    <div>
-                        <h2>Vehicle Garage</h2>
-                        <p>Registered vehicles and service profiles.</p>
-                    </div>
-
-                    <button class="primary" data-open="vehicleModal">
-                        ＋ Register Vehicle
+        <!-- ================================================================ -->
+        <!-- VEHICLES GARAGE VIEW                                             -->
+        <!-- ================================================================ -->
+        <div class="page-container" id="page-vehicles">
+            
+            <div class="page-header">
+                <div>
+                    <h2>Vehicle Garage</h2>
+                    <p>Registered customer vehicles, fuel configurations, and mileage logs.</p>
+                </div>
+                <div class="header-actions">
+                    <button class="primary-pill-btn" data-open="vehicleModal">
+                        <svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        <span>Add Vehicle</span>
                     </button>
-
                 </div>
+            </div>
 
-                <div id="vehicleGrid" class="card-grid"></div>
+            <div class="filter-bar">
+                <div class="filter-pills" id="vehicleFuelFilters">
+                    <button class="filter-chip active" data-fuel="All">All Fuels</button>
+                    <button class="filter-chip" data-fuel="Petrol">Petrol</button>
+                    <button class="filter-chip" data-fuel="Diesel">Diesel</button>
+                    <button class="filter-chip" data-fuel="Electric">Electric</button>
+                    <button class="filter-chip" data-fuel="Hybrid">Hybrid</button>
+                </div>
+            </div>
 
-            </section>
+            <div class="cards-grid-3" id="vehiclesGrid">
+                <!-- Populated dynamically -->
+            </div>
+
+        </div>
 
 
-            <!-- CUSTOMERS -->
-            <section class="page" id="page-customers">
-
-                <div class="section-head">
-
-                    <div>
-                        <h2>Customers</h2>
-                        <p>Customer profiles and contact details.</p>
-                    </div>
-
-                    <button class="primary" data-open="customerModal">
-                        ＋ Add Customer
+        <!-- ================================================================ -->
+        <!-- CUSTOMERS VIEW                                                   -->
+        <!-- ================================================================ -->
+        <div class="page-container" id="page-customers">
+            
+            <div class="page-header">
+                <div>
+                    <h2>Customer Directory</h2>
+                    <p>Client relationships, contact records, and registered garage vehicles.</p>
+                </div>
+                <div class="header-actions">
+                    <button class="primary-pill-btn" data-open="customerModal">
+                        <svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        <span>Add Customer</span>
                     </button>
+                </div>
+            </div>
 
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Customer Name</th>
+                            <th>Phone Number</th>
+                            <th>Email Address</th>
+                            <th>Location</th>
+                            <th>Vehicles Registered</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="customersTableBody">
+                        <!-- Populated dynamically -->
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+
+        <!-- ================================================================ -->
+        <!-- TECHNICIANS VIEW                                                 -->
+        <!-- ================================================================ -->
+        <div class="page-container" id="page-mechanics">
+            
+            <div class="page-header">
+                <div>
+                    <h2>Technician Roster</h2>
+                    <p>Workshop mechanics, active specializations, and real-time bay availability.</p>
+                </div>
+            </div>
+
+            <div class="cards-grid-3" id="mechanicsGrid">
+                <!-- Populated dynamically -->
+            </div>
+
+        </div>
+
+
+        <!-- ================================================================ -->
+        <!-- SERVICES CATALOG VIEW                                            -->
+        <!-- ================================================================ -->
+        <div class="page-container" id="page-services">
+            
+            <div class="page-header">
+                <div>
+                    <h2>Service Catalog & Pricing</h2>
+                    <p>Standard repair packages, maintenance checklists, and labor estimates.</p>
+                </div>
+            </div>
+
+            <div class="cards-grid-3" id="servicesGrid">
+                <!-- Populated dynamically -->
+            </div>
+
+        </div>
+
+
+        <!-- ================================================================ -->
+        <!-- INVOICES & BILLING VIEW                                          -->
+        <!-- ================================================================ -->
+        <div class="page-container" id="page-invoices">
+            
+            <div class="page-header">
+                <div>
+                    <h2>Invoices & Billing</h2>
+                    <p>Completed repair receipts, GST tax calculation, and payment reconciliation.</p>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Invoice #</th>
+                            <th>Customer</th>
+                            <th>Vehicle Plate</th>
+                            <th>Service</th>
+                            <th>Subtotal</th>
+                            <th>GST (18%)</th>
+                            <th>Total Amount</th>
+                            <th>Payment Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="invoicesTableBody">
+                        <!-- Populated dynamically -->
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+
+        <!-- ================================================================ -->
+        <!-- REPORTS & ANALYTICS VIEW                                         -->
+        <!-- ================================================================ -->
+        <div class="page-container" id="page-reports">
+            
+            <div class="page-header">
+                <div>
+                    <h2>Workshop Analytics</h2>
+                    <p>Throughput metrics, technician utilization, and monthly revenue performance.</p>
+                </div>
+            </div>
+
+            <div class="reports-grid">
+                <div style="border: 1px solid var(--border-subtle); border-radius: 10px; padding: 18px; background: #fff;">
+                    <div style="font-size: 13.5px; font-weight: 600; margin-bottom: 12px;">Service Package Distribution</div>
+                    <div style="height: 240px; position: relative;">
+                        <canvas id="categoryChart"></canvas>
+                    </div>
                 </div>
 
-
-                <div class="toolbar">
-
-                    <div class="search wide">
-                        ⌕
-                        <input
-                            id="customerSearch"
-                            placeholder="Search customers...">
+                <div style="border: 1px solid var(--border-subtle); border-radius: 10px; padding: 18px; background: #fff;">
+                    <div style="font-size: 13.5px; font-weight: 600; margin-bottom: 12px;">Revenue by Payment Method</div>
+                    <div style="height: 240px; position: relative;">
+                        <canvas id="paymentChart"></canvas>
                     </div>
+                </div>
+            </div>
 
+        </div>
+
+
+        <!-- ================================================================ -->
+        <!-- SETTINGS VIEW                                                    -->
+        <!-- ================================================================ -->
+        <div class="page-container" id="page-settings">
+            
+            <div class="page-header">
+                <div>
+                    <h2>Workshop Settings</h2>
+                    <p>Business profile, GSTIN registration, currency, and local database management.</p>
+                </div>
+            </div>
+
+            <div style="max-width: 880px; display: flex; flex-direction: column; gap: 20px;">
+                <div class="entity-card">
+                    <div class="entity-title" style="margin-bottom: 12px;">Workshop Profile</div>
+                    <div class="form-grid">
+                        <div class="form-group full-width">
+                            <label class="form-label">Workshop Name</label>
+                            <input type="text" class="form-input" id="settingWorkshopName" value="AutoPro Service Hub">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Phone</label>
+                            <input type="text" class="form-input" id="settingPhone" value="+91 98765 43210">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">GSTIN</label>
+                            <input type="text" class="form-input" id="settingGst" value="29ABCDE1234F1Z5">
+                        </div>
+                    </div>
+                    <div style="margin-top: 16px; text-align: right;">
+                        <button class="pill-btn" id="saveSettingsBtn" style="background: var(--text-primary); color: #fff;">Save Settings</button>
+                    </div>
                 </div>
 
-
-                <div class="panel">
-
-                    <div class="table-scroll">
-
-                        <table>
-
-                            <thead>
-
-                            <tr>
-                                <th>Customer</th>
-                                <th>Phone</th>
-                                <th>Email</th>
-                                <th>Address</th>
-                                <th>Vehicles</th>
-                            </tr>
-
-                            </thead>
-
-                            <tbody id="customerTable"></tbody>
-
-                        </table>
-
+                <div class="entity-card">
+                    <div class="entity-title" style="margin-bottom: 8px;">Database & Storage</div>
+                    <p class="entity-sub" style="margin-bottom: 14px;">Data is automatically persisted to your browser storage and synced with API endpoints.</p>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="pill-btn" id="exportDataBtn">Export JSON Backup</button>
+                        <button class="pill-btn" id="resetDataBtn" style="color: var(--accent-highlight);">Reset to Default Demo Data</button>
                     </div>
-
                 </div>
+            </div>
 
-            </section>
-
-
-            <!-- TECHNICIANS -->
-            <section class="page" id="page-mechanics">
-
-                <div class="section-head">
-
-                    <div>
-                        <h2>Technicians</h2>
-                        <p>Workshop team and availability.</p>
-                    </div>
-
-                </div>
-
-                <div id="mechanicGrid" class="card-grid"></div>
-
-            </section>
-
-
-            <!-- SERVICES -->
-            <section class="page" id="page-services">
-
-                <div class="section-head">
-
-                    <div>
-                        <h2>Service Catalog</h2>
-                        <p>Available services and standard pricing.</p>
-                    </div>
-
-                </div>
-
-                <div id="serviceGrid" class="card-grid"></div>
-
-            </section>
-
-
-            <!-- INVOICES -->
-            <section class="page" id="page-invoices">
-
-                <div class="section-head">
-
-                    <div>
-                        <h2>Invoices & Payments</h2>
-                        <p>Monitor billing and collections.</p>
-                    </div>
-
-                </div>
-
-
-                <div class="mini-stats">
-
-                    <div>
-                        <span>Paid</span>
-                        <b id="paidTotal">₹0</b>
-                    </div>
-
-                    <div>
-                        <span>Pending</span>
-                        <b id="pendingTotal">₹0</b>
-                    </div>
-
-                    <div>
-                        <span>Total Invoices</span>
-                        <b id="invoiceTotal">0</b>
-                    </div>
-
-                </div>
-
-
-                <div class="panel">
-
-                    <div class="table-scroll">
-
-                        <table>
-
-                            <thead>
-
-                            <tr>
-                                <th>Invoice</th>
-                                <th>Customer</th>
-                                <th>Vehicle</th>
-                                <th>Service</th>
-                                <th>Total</th>
-                                <th>Payment</th>
-                                <th>Method</th>
-                            </tr>
-
-                            </thead>
-
-                            <tbody id="invoiceTable"></tbody>
-
-                        </table>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- REPORTS -->
-            <section class="page" id="page-reports">
-
-                <div class="section-head">
-
-                    <div>
-                        <h2>Workshop Reports</h2>
-                        <p>Quick operational insights.</p>
-                    </div>
-
-                </div>
-
-
-                <div class="report-grid">
-
-                    <div class="report-card">
-                        <span>Completion Rate</span>
-                        <b id="reportCompletion">0%</b>
-                        <small>Completed / total jobs</small>
-                    </div>
-
-                    <div class="report-card">
-                        <span>Completed Revenue</span>
-                        <b id="reportRevenue">₹0</b>
-                        <small>Revenue from completed jobs</small>
-                    </div>
-
-                    <div class="report-card">
-                        <span>Registered Vehicles</span>
-                        <b id="reportVehicles">0</b>
-                        <small>Vehicles in garage</small>
-                    </div>
-
-                    <div class="report-card">
-                        <span>Available Technicians</span>
-                        <b id="reportMechanics">0</b>
-                        <small>Currently available</small>
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- SETTINGS -->
-            <section class="page" id="page-settings">
-
-                <div class="section-head">
-
-                    <div>
-                        <h2>Settings</h2>
-                        <p>Workshop preferences.</p>
-                    </div>
-
-                </div>
-
-
-                <div class="panel settings">
-
-                    <label>
-                        Workshop Name
-                        <input id="workshopName" value="AutoPro Service Hub">
-                    </label>
-
-                    <label>
-                        Location
-                        <input id="workshopLocation" value="Bangalore, India">
-                    </label>
-
-                    <button class="primary" id="saveSettings">
-                        Save Settings
-                    </button>
-
-                </div>
-
-            </section>
-
-        </section>
+        </div>
 
     </main>
 
+
+    <!-- ==================================================================== -->
+    <!-- BOTTOM TOOLBAR (Reference bottom pill bar)                           -->
+    <!-- ==================================================================== -->
+    <div class="bottom-toolbar">
+        <div class="toolbar-pills">
+            <button class="pill-btn" data-action="quick-filter-progress">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polyline></svg>
+                <span>Active Bay Jobs</span>
+            </button>
+            <button class="pill-btn" data-action="quick-filter-scheduled">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                <span>Today's Schedule</span>
+            </button>
+            <button class="pill-btn" data-action="quick-filter-available-techs">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
+                <span>Available Technicians</span>
+            </button>
+        </div>
+
+        <button class="primary-pill-btn" data-open="appointmentModal">
+            <svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            <span>Book Appointment</span>
+        </button>
+    </div>
+
 </div>
 
 
-<!-- ================= APPOINTMENT MODAL ================= -->
+<!-- ======================================================================== -->
+<!-- MODALS (Overlays are the only elements permitted shadows)                 -->
+<!-- ======================================================================== -->
 
-<div class="modal" id="appointmentModal">
-
-    <div class="modal-card">
-
-        <div class="modal-head">
-
-            <div>
-                <h3>Add Appointment</h3>
-                <p>Enter appointment information manually.</p>
-            </div>
-
-            <button class="close" data-close="appointmentModal">
-                ×
+<!-- 1. APPOINTMENT MODAL -->
+<div class="modal-overlay" id="appointmentModal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3>Schedule Service Appointment</h3>
+            <button class="modal-close-btn" data-close="appointmentModal">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
-
         </div>
-
-
         <form id="appointmentForm">
+            <div class="modal-body">
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label class="form-label">Customer *</label>
+                        <select class="form-select" id="apptCustomerId" required>
+                            <!-- Dynamically loaded -->
+                        </select>
+                    </div>
 
-            <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label class="form-label">Vehicle *</label>
+                        <select class="form-select" id="apptVehicleId" required>
+                            <!-- Dynamically loaded -->
+                        </select>
+                    </div>
 
-                <label>
-                    Customer Name *
-                    <input id="aCustomer" required
-                           placeholder="Mohammed Zia">
-                </label>
+                    <div class="form-group full-width">
+                        <label class="form-label">Service Package *</label>
+                        <select class="form-select" id="apptServiceId" required>
+                            <!-- Dynamically loaded -->
+                        </select>
+                    </div>
 
-                <label>
-                    Phone Number *
-                    <input id="aPhone" required
-                           placeholder="9876543210">
-                </label>
+                    <div class="form-group">
+                        <label class="form-label">Assigned Technician</label>
+                        <select class="form-select" id="apptMechanicId">
+                            <!-- Dynamically loaded -->
+                        </select>
+                    </div>
 
-                <label>
-                    Vehicle Registration *
-                    <input id="aVehicle" required
-                           placeholder="KA01AB1234">
-                </label>
+                    <div class="form-group">
+                        <label class="form-label">Estimated Cost (₹)</label>
+                        <input type="number" class="form-input" id="apptCost" required>
+                    </div>
 
-                <label>
-                    Vehicle Make *
-                    <input id="aMake" required
-                           placeholder="Toyota">
-                </label>
+                    <div class="form-group">
+                        <label class="form-label">Date *</label>
+                        <input type="date" class="form-input" id="apptDate" required>
+                    </div>
 
-                <label>
-                    Vehicle Model *
-                    <input id="aModel" required
-                           placeholder="Corolla">
-                </label>
+                    <div class="form-group">
+                        <label class="form-label">Time Slot *</label>
+                        <input type="time" class="form-input" id="apptTime" value="10:00" required>
+                    </div>
 
-                <label>
-                    Service *
-                    <input id="aService" required
-                           placeholder="Engine Service">
-                </label>
-
-                <label>
-                    Technician
-                    <input id="aMechanic"
-                           placeholder="Raj Kumar">
-                </label>
-
-                <label>
-                    Date *
-                    <input id="aDate" type="date" required>
-                </label>
-
-                <label>
-                    Time *
-                    <input id="aTime" type="time" required>
-                </label>
-
-                <label>
-                    Estimated Cost *
-                    <input id="aCost"
-                           type="number"
-                           min="0"
-                           required
-                           placeholder="2500">
-                </label>
-
-                <label class="full">
-                    Notes
-                    <textarea id="aNotes"
-                              rows="3"
-                              placeholder="Additional job details..."></textarea>
-                </label>
-
+                    <div class="form-group full-width">
+                        <label class="form-label">Inspection Notes</label>
+                        <textarea class="form-textarea" id="apptNotes" placeholder="Describe customer requests, noises, symptoms..."></textarea>
+                    </div>
+                </div>
             </div>
-
-
-            <div class="form-foot">
-
-                <button
-                    type="button"
-                    class="secondary"
-                    data-close="appointmentModal">
-                    Cancel
-                </button>
-
-                <button class="primary" type="submit">
-                    Create Appointment
-                </button>
-
+            <div class="modal-footer">
+                <button type="button" class="pill-btn" data-close="appointmentModal">Cancel</button>
+                <button type="submit" class="primary-pill-btn">Schedule Service</button>
             </div>
-
         </form>
-
     </div>
-
 </div>
 
 
-<!-- CUSTOMER MODAL -->
-
-<div class="modal" id="customerModal">
-
-    <div class="modal-card small">
-
-        <div class="modal-head">
-
-            <div>
-                <h3>Add Customer</h3>
-                <p>Create a customer profile.</p>
-            </div>
-
-            <button class="close" data-close="customerModal">
-                ×
+<!-- 2. VEHICLE MODAL -->
+<div class="modal-overlay" id="vehicleModal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3>Register Customer Vehicle</h3>
+            <button class="modal-close-btn" data-close="vehicleModal">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
-
         </div>
-
-
-        <form id="customerForm">
-
-            <div class="form-grid">
-
-                <label>
-                    Name *
-                    <input id="cName" required>
-                </label>
-
-                <label>
-                    Phone *
-                    <input id="cPhone" required>
-                </label>
-
-                <label>
-                    Email
-                    <input id="cEmail" type="email">
-                </label>
-
-                <label>
-                    Address
-                    <input id="cAddress">
-                </label>
-
-            </div>
-
-
-            <div class="form-foot">
-
-                <button
-                    type="button"
-                    class="secondary"
-                    data-close="customerModal">
-                    Cancel
-                </button>
-
-                <button class="primary">
-                    Save Customer
-                </button>
-
-            </div>
-
-        </form>
-
-    </div>
-
-</div>
-
-
-<!-- VEHICLE MODAL -->
-
-<div class="modal" id="vehicleModal">
-
-    <div class="modal-card">
-
-        <div class="modal-head">
-
-            <div>
-                <h3>Register Vehicle</h3>
-                <p>Add a vehicle to the garage.</p>
-            </div>
-
-            <button class="close" data-close="vehicleModal">
-                ×
-            </button>
-
-        </div>
-
-
         <form id="vehicleForm">
+            <div class="modal-body">
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label class="form-label">Owner Customer *</label>
+                        <select class="form-select" id="vehCustomerId" required></select>
+                    </div>
 
-            <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">License Plate *</label>
+                        <input type="text" class="form-input" id="vehRegistration" placeholder="KA01AB1234" required style="text-transform: uppercase;">
+                    </div>
 
-                <label>
-                    Owner *
-                    <select id="vCustomer" required></select>
-                </label>
+                    <div class="form-group">
+                        <label class="form-label">Fuel Type *</label>
+                        <select class="form-select" id="vehFuel">
+                            <option>Petrol</option>
+                            <option>Diesel</option>
+                            <option>Electric</option>
+                            <option>Hybrid</option>
+                        </select>
+                    </div>
 
-                <label>
-                    Registration *
-                    <input id="vReg" required>
-                </label>
+                    <div class="form-group">
+                        <label class="form-label">Make *</label>
+                        <input type="text" class="form-input" id="vehMake" placeholder="Toyota, Hyundai, Tata..." required>
+                    </div>
 
-                <label>
-                    Make *
-                    <input id="vMake" required>
-                </label>
+                    <div class="form-group">
+                        <label class="form-label">Model *</label>
+                        <input type="text" class="form-input" id="vehModel" placeholder="Creta, Nexon, City..." required>
+                    </div>
 
-                <label>
-                    Model *
-                    <input id="vModel" required>
-                </label>
+                    <div class="form-group">
+                        <label class="form-label">Year</label>
+                        <input type="number" class="form-input" id="vehYear" value="2023">
+                    </div>
 
-                <label>
-                    Year
-                    <input id="vYear" type="number" value="2024">
-                </label>
+                    <div class="form-group">
+                        <label class="form-label">Odometer Mileage (km)</label>
+                        <input type="number" class="form-input" id="vehMileage" value="25000">
+                    </div>
 
-                <label>
-                    Fuel
-                    <select id="vFuel">
-                        <option>Petrol</option>
-                        <option>Diesel</option>
-                        <option>Electric</option>
-                        <option>Hybrid</option>
-                    </select>
-                </label>
-
-                <label>
-                    Mileage
-                    <input id="vMileage" type="number" value="0">
-                </label>
-
-                <label>
-                    Color
-                    <input id="vColor">
-                </label>
-
+                    <div class="form-group full-width">
+                        <label class="form-label">Exterior Color</label>
+                        <input type="text" class="form-input" id="vehColor" placeholder="White, Metallic Black, Silver...">
+                    </div>
+                </div>
             </div>
-
-
-            <div class="form-foot">
-
-                <button
-                    type="button"
-                    class="secondary"
-                    data-close="vehicleModal">
-                    Cancel
-                </button>
-
-                <button class="primary">
-                    Register Vehicle
-                </button>
-
+            <div class="modal-footer">
+                <button type="button" class="pill-btn" data-close="vehicleModal">Cancel</button>
+                <button type="submit" class="primary-pill-btn">Register Vehicle</button>
             </div>
-
         </form>
-
     </div>
-
 </div>
 
 
-<div class="toast" id="toast"></div>
+<!-- 3. CUSTOMER MODAL -->
+<div class="modal-overlay" id="customerModal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3>Add New Customer</h3>
+            <button class="modal-close-btn" data-close="customerModal">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+        <form id="customerForm">
+            <div class="modal-body">
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label class="form-label">Full Name *</label>
+                        <input type="text" class="form-input" id="custName" placeholder="Arjun Sharma" required>
+                    </div>
 
+                    <div class="form-group">
+                        <label class="form-label">Phone Number *</label>
+                        <input type="tel" class="form-input" id="custPhone" placeholder="9876543210" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-input" id="custEmail" placeholder="client@example.com">
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label class="form-label">Address / Area</label>
+                        <input type="text" class="form-input" id="custAddress" placeholder="Indiranagar, Bengaluru">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="pill-btn" data-close="customerModal">Cancel</button>
+                <button type="submit" class="primary-pill-btn">Save Customer</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<!-- 4. PRINTABLE INVOICE MODAL -->
+<div class="modal-overlay" id="invoiceModal">
+    <div class="modal-box" style="max-width: 640px;">
+        <div class="modal-header">
+            <h3>Tax Invoice & Receipt</h3>
+            <button class="modal-close-btn" data-close="invoiceModal">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+        <div class="modal-body" id="invoicePrintArea">
+            <div class="invoice-printable" id="invoiceReceiptContent">
+                <!-- Dynamically populated invoice receipt -->
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="pill-btn" data-close="invoiceModal">Close</button>
+            <button type="button" class="pill-btn" id="invoicePayToggleBtn" style="border-color: var(--accent-teal); color: var(--accent-teal);">Mark as Paid</button>
+            <button type="button" class="primary-pill-btn" id="printInvoiceBtn">
+                <svg viewBox="0 0 24 24" fill="none" width="14" height="14" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                <span>Print Invoice</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+
+<!-- 5. HELP & SHORTCUTS MODAL -->
+<div class="modal-overlay" id="helpModal">
+    <div class="modal-box" style="max-width: 540px;">
+        <div class="modal-header">
+            <h3>AutoPro Hub Help & Shortcuts</h3>
+            <button class="modal-close-btn" data-close="helpModal">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div style="display: flex; flex-direction: column; gap: 20px;">
+                <div>
+                    <div style="font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-secondary); margin-bottom: 10px;">Keyboard Shortcuts</div>
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border-subtle);">
+                            <span style="font-size: 13.5px;">Focus Global Search</span>
+                            <span class="search-shortcut" style="position: static;">⌘ K / Ctrl+K</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border-subtle);">
+                            <span style="font-size: 13.5px;">Dismiss any Modal or Alert</span>
+                            <span class="search-shortcut" style="position: static;">Esc</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0;">
+                            <span style="font-size: 13.5px;">Print Selected Invoice</span>
+                            <span class="search-shortcut" style="position: static;">⌘ P</span>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div style="font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-secondary); margin-bottom: 10px;">Workflow Tips</div>
+                    <ul style="padding-left: 18px; font-size: 13px; color: var(--text-secondary); line-height: 1.6;">
+                        <li><b>Start Bay Job:</b> In Appointments, click <i>Start Job</i> to move to <i>In Progress</i>.</li>
+                        <li><b>Automatic Invoicing:</b> Marking a job <i>Completed</i> automatically creates an invoice with 18% GST.</li>
+                        <li><b>Garage Quick-Booking:</b> Click <i>+ Service Job</i> on any vehicle card to auto-populate the booking modal.</li>
+                        <li><b>Technician Status:</b> Click any technician card to toggle between <i>Available</i> and <i>Busy</i>.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="primary-pill-btn" data-close="helpModal">Got it</button>
+        </div>
+    </div>
+</div>
+
+
+<!-- Toast Notification Pill -->
+<div class="toast-pill" id="toastPill">Action completed</div>
+
+<!-- Script -->
 <script src="script.js"></script>
 
 </body>
