@@ -1,52 +1,63 @@
-const state = {
-    dashboard: null,
-    customers: [],
-    vehicles: [],
-    services: [],
-    mechanics: [],
-    appointments: [],
-    chart: null
-};
+/* =========================================================
+   AUTOPRO SERVICE HUB
+   Complete Frontend JavaScript
+   Data is saved automatically in localStorage
+   ========================================================= */
 
 
-const $ = id =>
-    document.getElementById(id);
+/* =========================
+   GLOBAL DATA
+========================= */
 
+const STORAGE_KEY = "autopro_service_hub_v1";
+
+let data;
+let serviceChart;
+
+
+/* =========================
+   HELPERS
+========================= */
+
+const $ = id => document.getElementById(id);
 
 const money = value =>
-    "₹" + Number(value || 0).toLocaleString("en-IN");
+    "₹" + Number(value || 0).toLocaleString("en-IN", {
+        maximumFractionDigits: 0
+    });
 
 
-const initials = name =>
-    (name || "")
-        .split(" ")
-        .map(x => x[0])
-        .join("")
-        .slice(0, 2)
-        .toUpperCase();
+function escapeHTML(value){
 
+    return String(value ?? "").replace(
+        /[&<>"']/g,
 
-function escapeHTML(value) {
-
-    return String(value ?? "")
-        .replace(/[&<>"']/g, character => {
-
-            const map = {
-                "&": "&amp;",
-                "<": "&lt;",
-                ">": "&gt;",
-                '"': "&quot;",
-                "'": "&#039;"
-            };
-
-            return map[character];
-
-        });
+        char => ({
+            "&":"&amp;",
+            "<":"&lt;",
+            ">":"&gt;",
+            '"':"&quot;",
+            "'":"&#039;"
+        }[char])
+    );
 
 }
 
 
-function toast(message) {
+function initials(name){
+
+    return String(name || "?")
+        .trim()
+        .split(/\s+/)
+        .slice(0,2)
+        .map(x => x[0])
+        .join("")
+        .toUpperCase();
+
+}
+
+
+function toast(message){
 
     const element = $("toast");
 
@@ -54,7 +65,9 @@ function toast(message) {
 
     element.classList.add("show");
 
-    setTimeout(() => {
+    clearTimeout(window.toastTimer);
+
+    window.toastTimer = setTimeout(() => {
 
         element.classList.remove("show");
 
@@ -63,33 +76,21 @@ function toast(message) {
 }
 
 
-function statusBadge(status) {
+function statusBadge(status){
 
     const classes = {
 
-        "Completed": "green",
-
-        "Scheduled": "blue",
-
-        "In Progress": "yellow",
-
-        "Ready for Pickup": "green",
-
-        "Cancelled": "red",
-
-        "Paid": "green",
-
-        "Pending": "yellow"
+        "Completed":"b-green",
+        "Scheduled":"b-blue",
+        "In Progress":"b-yellow",
+        "Cancelled":"b-red",
+        "Paid":"b-green",
+        "Pending":"b-yellow"
 
     };
 
-
-    const className =
-        classes[status] || "blue";
-
-
     return `
-        <span class="status ${className}">
+        <span class="badge ${classes[status] || "b-blue"}">
             ${escapeHTML(status)}
         </span>
     `;
@@ -97,469 +98,642 @@ function statusBadge(status) {
 }
 
 
-async function api(url, options = {}) {
+/* =========================
+   DEFAULT DATA
+========================= */
 
-    const response =
-        await fetch(url, options);
+function createInitialData(){
 
-
-    let data = {};
-
-
-    try {
-
-        data =
-            await response.json();
-
-    } catch {
-
-        data = {};
-
-    }
+    const today =
+        new Date().toISOString().slice(0,10);
 
 
-    if (!response.ok) {
+    return {
 
-        throw new Error(
-            data.detail ||
-            "Request failed"
-        );
+        customers:[
 
-    }
+            {
+                id:1,
+                name:"Arjun Mehta",
+                phone:"9876543210",
+                email:"arjun@example.com",
+                address:"Bangalore"
+            },
+
+            {
+                id:2,
+                name:"Priya Sharma",
+                phone:"9988776655",
+                email:"priya@example.com",
+                address:"Whitefield"
+            }
+
+        ],
 
 
-    return data;
+        vehicles:[
+
+            {
+                id:1,
+                customerId:1,
+                registration:"KA01AB1234",
+                make:"Toyota",
+                model:"Corolla",
+                year:2022,
+                fuel:"Petrol",
+                mileage:28400,
+                color:"White"
+            },
+
+            {
+                id:2,
+                customerId:2,
+                registration:"KA05MN7788",
+                make:"Hyundai",
+                model:"Creta",
+                year:2023,
+                fuel:"Diesel",
+                mileage:17300,
+                color:"Black"
+            }
+
+        ],
+
+
+        mechanics:[
+
+            {
+                id:1,
+                name:"Raj Kumar",
+                specialization:"Engine & Diagnostics",
+                experience:8,
+                phone:"9000000001",
+                status:"Available"
+            },
+
+            {
+                id:2,
+                name:"Vikram Singh",
+                specialization:"Brakes & Suspension",
+                experience:6,
+                phone:"9000000002",
+                status:"Available"
+            },
+
+            {
+                id:3,
+                name:"Amit Patil",
+                specialization:"Electrical Systems",
+                experience:5,
+                phone:"9000000003",
+                status:"Busy"
+            }
+
+        ],
+
+
+        services:[
+
+            {
+                id:1,
+                name:"Engine Service",
+                category:"Maintenance",
+                price:2500,
+                duration:120
+            },
+
+            {
+                id:2,
+                name:"Oil Change",
+                category:"Maintenance",
+                price:900,
+                duration:45
+            },
+
+            {
+                id:3,
+                name:"Brake Inspection",
+                category:"Brakes",
+                price:700,
+                duration:60
+            },
+
+            {
+                id:4,
+                name:"Full Car Service",
+                category:"Maintenance",
+                price:4500,
+                duration:180
+            },
+
+            {
+                id:5,
+                name:"AC Service",
+                category:"Electrical",
+                price:1800,
+                duration:90
+            }
+
+        ],
+
+
+        appointments:[
+
+            {
+                id:1,
+                customerId:1,
+                customer:"Arjun Mehta",
+                phone:"9876543210",
+                vehicleId:1,
+                registration:"KA01AB1234",
+                make:"Toyota",
+                model:"Corolla",
+                service:"Engine Service",
+                mechanic:"Raj Kumar",
+                date:today,
+                time:"10:00",
+                cost:2500,
+                status:"In Progress",
+                notes:"Engine inspection"
+            },
+
+            {
+                id:2,
+                customerId:2,
+                customer:"Priya Sharma",
+                phone:"9988776655",
+                vehicleId:2,
+                registration:"KA05MN7788",
+                make:"Hyundai",
+                model:"Creta",
+                service:"Brake Inspection",
+                mechanic:"Vikram Singh",
+                date:today,
+                time:"14:30",
+                cost:700,
+                status:"Scheduled",
+                notes:"Brake check"
+            }
+
+        ],
+
+
+        invoices:[]
+
+    };
 
 }
 
 
-/* =========================================================
-   PAGE NAVIGATION
-========================================================= */
+/* =========================
+   STORAGE
+========================= */
 
-function showPage(page) {
+function loadData(){
+
+    try{
+
+        const saved =
+            localStorage.getItem(STORAGE_KEY);
+
+        data = saved
+            ? JSON.parse(saved)
+            : createInitialData();
+
+    }
+
+    catch(error){
+
+        data = createInitialData();
+
+    }
+
+    saveData();
+
+}
+
+
+function saveData(){
+
+    localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(data)
+    );
+
+}
+
+
+/* =========================
+   PAGE NAVIGATION
+========================= */
+
+function showPage(page){
 
     document
         .querySelectorAll(".page")
-        .forEach(element => {
-
-            element.classList.remove(
-                "active"
-            );
-
-        });
+        .forEach(element =>
+            element.classList.remove("active")
+        );
 
 
-    const target =
-        $("page-" + page);
+    const target = $("page-" + page);
 
-
-    if (target) {
-
+    if(target){
         target.classList.add("active");
-
     }
 
 
     document
         .querySelectorAll(".nav")
-        .forEach(element => {
-
-            element.classList.toggle(
+        .forEach(button =>
+            button.classList.toggle(
                 "active",
-                element.dataset.page === page
-            );
+                button.dataset.page === page
+            )
+        );
 
-        });
 
+    const pageInfo = {
 
-    const titles = {
-
-        dashboard: [
+        dashboard:[
             "Dashboard",
             "Workshop overview and today's operations"
         ],
 
-        appointments: [
+        appointments:[
             "Appointments",
-            "Schedule, assign and track service jobs"
+            "Schedule and manage service jobs."
         ],
 
-        vehicles: [
+        vehicles:[
             "Vehicle Garage",
-            "Every registered vehicle, owner and service profile"
+            "Registered vehicles and service profiles."
         ],
 
-        customers: [
+        customers:[
             "Customers",
-            "Customer profiles and registered vehicles"
+            "Customer profiles and contact details."
         ],
 
-        mechanics: [
+        mechanics:[
             "Technicians",
-            "Skills, experience and current availability"
+            "Workshop team and availability."
         ],
 
-        services: [
+        services:[
             "Service Catalog",
-            "Pricing and estimated workshop duration"
+            "Available services and standard pricing."
         ],
 
-        invoices: [
+        invoices:[
             "Invoices & Payments",
-            "Monitor workshop billing and collections"
+            "Monitor billing and collections."
         ],
 
-        reports: [
+        reports:[
             "Workshop Reports",
-            "Quick operational insights from your service data"
+            "Quick operational insights."
         ],
 
-        settings: [
+        settings:[
             "Settings",
-            "Workshop configuration and system information"
+            "Workshop preferences."
         ]
 
     };
 
 
-    if (titles[page]) {
+    if(pageInfo[page]){
 
         $("pageTitle").textContent =
-            titles[page][0];
+            pageInfo[page][0];
 
-        $("pageSubtitle").textContent =
-            titles[page][1];
+        $("pageSub").textContent =
+            pageInfo[page][1];
 
     }
 
 
-    if (page === "dashboard")
-        loadDashboard();
+    $("sidebar").classList.remove("open");
 
-    if (page === "appointments")
-        loadAppointments();
 
-    if (page === "vehicles")
-        loadVehicles();
-
-    if (page === "customers")
-        loadCustomers();
-
-    if (page === "mechanics")
-        loadMechanics();
-
-    if (page === "services")
-        loadServices();
-
-    if (page === "invoices")
-        loadInvoices();
-
-    if (page === "reports")
-        renderReports();
+    renderAll();
 
 }
 
 
-/* =========================================================
+/* =========================
    DASHBOARD
-========================================================= */
+========================= */
 
-async function loadDashboard() {
+function renderDashboard(){
 
-    try {
-
-        state.dashboard =
-            await api("/api/dashboard");
+    const appointments =
+        data.appointments;
 
 
-        const dashboard =
-            state.dashboard;
+    const completed =
+        appointments.filter(
+            appointment =>
+                appointment.status === "Completed"
+        );
 
 
-        const stats =
-            dashboard.stats;
+    const inProgress =
+        appointments.filter(
+            appointment =>
+                appointment.status === "In Progress"
+        );
 
 
-        $("statTotal").textContent =
-            stats.total_services;
+    $("statTotal").textContent =
+        appointments.length;
 
 
-        $("statCompleted").textContent =
-            stats.completed;
+    $("statCompleted").textContent =
+        completed.length;
 
 
-        $("statProgress").textContent =
-            stats.in_progress;
+    $("statProgress").textContent =
+        inProgress.length;
 
 
-        $("statRevenue").textContent =
-            money(stats.revenue);
+    const revenue =
+        completed.reduce(
+            (sum, appointment) =>
+                sum + Number(appointment.cost || 0),
+            0
+        );
 
 
-        $("todaySub").textContent =
-            `${dashboard.today.length}
-             appointment${dashboard.today.length === 1 ? "" : "s"}
-             today`;
+    $("statRevenue").textContent =
+        money(revenue);
 
 
-        if (dashboard.today.length) {
+    const today =
+        new Date().toISOString().slice(0,10);
 
-            $("todayList").innerHTML =
-                dashboard.today.map(item => `
 
-                    <div class="schedule-item">
+    const todayAppointments =
+        appointments
+            .filter(a => a.date === today)
+            .sort((a,b) =>
+                a.time.localeCompare(b.time)
+            );
 
-                        <div class="car-icon">
-                            🚘
+
+    $("todaySub").textContent =
+        `${todayAppointments.length} appointment${
+            todayAppointments.length === 1 ? "" : "s"
+        }`;
+
+
+    if(todayAppointments.length === 0){
+
+        $("todayList").innerHTML = `
+            <div style="padding:22px;color:#7c8492">
+                No appointments today.
+            </div>
+        `;
+
+    }
+
+    else{
+
+        $("todayList").innerHTML =
+            todayAppointments
+                .map(appointment => `
+
+                    <div class="appt">
+
+                        <div class="car">
+                            🚗
                         </div>
 
-                        <div class="schedule-info">
+                        <div class="appt-info">
 
                             <b>
-                                ${escapeHTML(item.customer)}
+                                ${escapeHTML(appointment.customer)}
                             </b>
 
                             <small>
-                                ${escapeHTML(item.make)}
-                                ${escapeHTML(item.model)}
+                                ${escapeHTML(appointment.make)}
+                                ${escapeHTML(appointment.model)}
                                 ·
-                                ${escapeHTML(item.service)}
+                                ${escapeHTML(appointment.service)}
                             </small>
 
                         </div>
 
-                        <div class="schedule-time">
+                        <div class="appt-time">
 
                             <b>
-                                ${escapeHTML(item.appointment_time)}
+                                ${escapeHTML(appointment.time)}
                             </b>
 
                             <small>
-                                ${statusBadge(item.status)}
+                                ${escapeHTML(appointment.status)}
                             </small>
 
                         </div>
 
                     </div>
 
-                `).join("");
-
-        } else {
-
-            $("todayList").innerHTML = `
-
-                <div style="
-                    padding:30px 0;
-                    text-align:center;
-                    color:#7b8491;
-                    font-size:10px;
-                ">
-                    No appointments today.
-                </div>
-
-            `;
-
-        }
-
-
-        $("recentTable").innerHTML =
-            dashboard.recent.map(item => `
-
-                <tr>
-
-                    <td>
-
-                        <div class="person">
-
-                            <div class="person-avatar">
-                                ${initials(item.customer)}
-                            </div>
-
-                            <div>
-
-                                <b>
-                                    ${escapeHTML(item.customer)}
-                                </b>
-
-                                <small>
-                                    ${escapeHTML(item.phone || "")}
-                                </small>
-
-                            </div>
-
-                        </div>
-
-                    </td>
-
-
-                    <td>
-
-                        <b>
-                            ${escapeHTML(item.make)}
-                            ${escapeHTML(item.model)}
-                        </b>
-
-                        <br>
-
-                        <small style="color:#7b8491">
-                            ${escapeHTML(item.registration)}
-                        </small>
-
-                    </td>
-
-
-                    <td>
-                        ${escapeHTML(item.service)}
-                    </td>
-
-
-                    <td>
-                        ${escapeHTML(item.mechanic || "Unassigned")}
-                    </td>
-
-
-                    <td>
-                        ${escapeHTML(item.appointment_date)}
-                    </td>
-
-
-                    <td>
-                        ${statusBadge(item.status)}
-                    </td>
-
-
-                    <td>
-                        <b>
-                            ${money(item.estimated_cost)}
-                        </b>
-                    </td>
-
-                </tr>
-
-            `).join("");
-
-
-        drawChart(
-            dashboard.chart
-        );
-
-    } catch (error) {
-
-        toast(error.message);
+                `)
+                .join("");
 
     }
+
+
+    const recent =
+        appointments
+            .slice()
+            .sort((a,b) => b.id - a.id)
+            .slice(0,7);
+
+
+    $("recentTable").innerHTML =
+        recent.length
+
+        ?
+
+        recent.map(appointment => `
+
+            <tr>
+
+                <td>
+                    ${escapeHTML(appointment.customer)}
+                </td>
+
+                <td>
+                    ${escapeHTML(appointment.registration)}
+                </td>
+
+                <td>
+                    ${escapeHTML(appointment.service)}
+                </td>
+
+                <td>
+                    ${escapeHTML(
+                        appointment.mechanic ||
+                        "Unassigned"
+                    )}
+                </td>
+
+                <td>
+                    ${escapeHTML(appointment.date)}
+                </td>
+
+                <td>
+                    ${statusBadge(
+                        appointment.status
+                    )}
+                </td>
+
+                <td>
+                    ${money(appointment.cost)}
+                </td>
+
+            </tr>
+
+        `).join("")
+
+        :
+
+        `
+
+            <tr>
+
+                <td
+                    colspan="7"
+                    style="text-align:center;padding:30px"
+                >
+                    No appointments yet.
+                </td>
+
+            </tr>
+
+        `;
+
+
+    drawChart();
 
 }
 
 
-/* =========================================================
+/* =========================
    CHART
-========================================================= */
+========================= */
 
-function drawChart(data) {
+function drawChart(){
 
-    if (state.chart) {
+    const days = [];
 
-        state.chart.destroy();
+
+    for(let i=6;i>=0;i--){
+
+        const date =
+            new Date();
+
+        date.setDate(
+            date.getDate() - i
+        );
+
+        days.push(
+            date.toISOString().slice(0,10)
+        );
 
     }
 
 
-    state.chart =
+    const labels =
+        days.map(date =>
+            new Date(
+                date + "T12:00:00"
+            ).toLocaleDateString(
+                "en-IN",
+                {
+                    weekday:"short"
+                }
+            )
+        );
+
+
+    const values =
+        days.map(date =>
+            data.appointments.filter(
+                appointment =>
+                    appointment.date === date
+            ).length
+        );
+
+
+    if(serviceChart){
+
+        serviceChart.destroy();
+
+    }
+
+
+    serviceChart =
         new Chart(
             $("serviceChart"),
             {
 
-                type: "line",
+                type:"line",
 
-                data: {
+                data:{
 
-                    labels:
-                        data.map(
-                            item => item.date
-                        ),
+                    labels,
 
-                    datasets: [
+                    datasets:[{
 
-                        {
+                        data:values,
 
-                            data:
-                                data.map(
-                                    item =>
-                                        item.count
-                                ),
+                        borderColor:"#ff5a1f",
 
-                            borderColor:
-                                "#ff5a1f",
+                        backgroundColor:
+                            "rgba(255,90,31,.08)",
 
-                            backgroundColor:
-                                "rgba(255,90,31,.08)",
+                        fill:true,
 
-                            fill: true,
+                        tension:.4,
 
-                            tension: .4,
+                        borderWidth:3,
 
-                            borderWidth: 3,
+                        pointRadius:4
 
-                            pointRadius: 4,
-
-                            pointBackgroundColor:
-                                "#ff5a1f"
-
-                        }
-
-                    ]
+                    }]
 
                 },
 
+                options:{
 
-                options: {
+                    responsive:true,
 
-                    responsive: true,
+                    maintainAspectRatio:false,
 
-                    maintainAspectRatio: false,
+                    plugins:{
 
-                    plugins: {
-
-                        legend: {
-                            display: false
+                        legend:{
+                            display:false
                         }
 
                     },
 
+                    scales:{
 
-                    scales: {
-
-                        y: {
-
-                            beginAtZero: true,
-
-                            ticks: {
-                                font: {
-                                    size: 9
-                                }
-                            },
-
-                            grid: {
-                                color: "#eef0f4"
+                        y:{
+                            beginAtZero:true,
+                            ticks:{
+                                precision:0
                             }
-
                         },
 
-
-                        x: {
-
-                            ticks: {
-                                font: {
-                                    size: 9
-                                }
-                            },
-
-                            grid: {
-                                display: false
+                        x:{
+                            grid:{
+                                display:false
                             }
-
                         }
 
                     }
@@ -572,102 +746,33 @@ function drawChart(data) {
 }
 
 
-/* =========================================================
+/* =========================
    APPOINTMENTS
-========================================================= */
+========================= */
 
-async function loadAppointments() {
+function renderAppointments(
+    list = data.appointments
+){
 
-    try {
-
-        state.appointments =
-            await api(
-                "/api/appointments"
+    const sorted =
+        list
+            .slice()
+            .sort(
+                (a,b) =>
+                    (a.date + a.time)
+                    .localeCompare(
+                        b.date + b.time
+                    )
             );
 
 
-        renderAppointments();
-
-    } catch (error) {
-
-        toast(error.message);
-
-    }
-
-}
-
-
-function renderAppointments() {
-
-    const query =
-        (
-            $("appointmentSearch")
-                .value ||
-            ""
-        ).toLowerCase();
-
-
-    const filter =
-        $("appointmentFilter").value;
-
-
-    const rows =
-        state.appointments.filter(
-            appointment => {
-
-                const matchesFilter =
-                    !filter ||
-                    appointment.status === filter;
-
-
-                const matchesSearch =
-                    !query ||
-                    Object.values(
-                        appointment
-                    ).some(value =>
-                        String(value)
-                            .toLowerCase()
-                            .includes(query)
-                    );
-
-
-                return (
-                    matchesFilter &&
-                    matchesSearch
-                );
-
-            }
-        );
-
-
-    if (!rows.length) {
-
-        $("appointmentTable").innerHTML = `
-
-            <tr>
-
-                <td
-                    colspan="7"
-                    style="
-                        text-align:center;
-                        padding:35px;
-                        color:#7b8491;
-                    "
-                >
-                    No appointments found.
-                </td>
-
-            </tr>
-
-        `;
-
-        return;
-
-    }
-
-
     $("appointmentTable").innerHTML =
-        rows.map(item => `
+
+        sorted.length
+
+        ?
+
+        sorted.map(appointment => `
 
             <tr>
 
@@ -676,17 +781,25 @@ function renderAppointments() {
                     <div class="person">
 
                         <div class="person-avatar">
-                            ${initials(item.customer)}
+
+                            ${initials(
+                                appointment.customer
+                            )}
+
                         </div>
 
                         <div>
 
                             <b>
-                                ${escapeHTML(item.customer)}
+                                ${escapeHTML(
+                                    appointment.customer
+                                )}
                             </b>
 
                             <small>
-                                ${escapeHTML(item.phone)}
+                                ${escapeHTML(
+                                    appointment.phone
+                                )}
                             </small>
 
                         </div>
@@ -699,46 +812,59 @@ function renderAppointments() {
                 <td>
 
                     <b>
-                        ${escapeHTML(item.make)}
-                        ${escapeHTML(item.model)}
-                    </b>
-
-                    <br>
-
-                    <small style="color:#7b8491">
-                        ${escapeHTML(item.registration)}
-                    </small>
-
-                </td>
-
-
-                <td>
-                    ${escapeHTML(item.service)}
-                </td>
-
-
-                <td>
-
-                    <b>
-                        ${escapeHTML(item.appointment_date)}
+                        ${escapeHTML(
+                            appointment.make
+                        )}
+                        ${escapeHTML(
+                            appointment.model
+                        )}
                     </b>
 
                     <br>
 
                     <small>
-                        ${escapeHTML(item.appointment_time)}
+                        ${escapeHTML(
+                            appointment.registration
+                        )}
                     </small>
 
                 </td>
 
 
                 <td>
-                    ${escapeHTML(item.mechanic || "Unassigned")}
+                    ${escapeHTML(
+                        appointment.service
+                    )}
                 </td>
 
 
                 <td>
-                    ${statusBadge(item.status)}
+
+                    ${escapeHTML(
+                        appointment.date
+                    )}
+
+                    <br>
+
+                    ${escapeHTML(
+                        appointment.time
+                    )}
+
+                </td>
+
+
+                <td>
+                    ${escapeHTML(
+                        appointment.mechanic ||
+                        "Unassigned"
+                    )}
+                </td>
+
+
+                <td>
+                    ${statusBadge(
+                        appointment.status
+                    )}
                 </td>
 
 
@@ -746,7 +872,7 @@ function renderAppointments() {
 
                     <select
                         class="select status-update"
-                        data-id="${item.id}"
+                        data-id="${appointment.id}"
                     >
 
                         <option value="">
@@ -759,10 +885,6 @@ function renderAppointments() {
 
                         <option>
                             In Progress
-                        </option>
-
-                        <option>
-                            Ready for Pickup
                         </option>
 
                         <option>
@@ -779,109 +901,159 @@ function renderAppointments() {
 
             </tr>
 
-        `).join("");
+        `).join("")
+
+        :
+
+        `
+
+            <tr>
+
+                <td
+                    colspan="7"
+                    style="text-align:center;padding:30px"
+                >
+                    No appointments found.
+                </td>
+
+            </tr>
+
+        `;
 
 }
 
 
-async function changeStatus(
-    id,
-    status
-) {
+/* =========================
+   VEHICLES
+========================= */
 
-    if (!status)
-        return;
+function renderVehicles(){
 
+    $("vehicleGrid").innerHTML =
+        data.vehicles.map(vehicle => {
 
-    try {
-
-        await api(
-            `/api/appointments/${id}/status`,
-            {
-
-                method: "PATCH",
-
-                headers: {
-                    "Content-Type":
-                        "application/json"
-                },
-
-                body:
-                    JSON.stringify({
-                        status
-                    })
-
-            }
-        );
+            const customer =
+                data.customers.find(
+                    customer =>
+                        customer.id === vehicle.customerId
+                );
 
 
-        toast(
-            "✓ Appointment status updated"
-        );
+            return `
+
+                <div class="vehicle-card">
+
+                    <div class="vehicle-top">
+
+                        <div class="vehicle-art">
+                            🚙
+                        </div>
+
+                        <span class="badge b-green">
+                            ${escapeHTML(
+                                vehicle.fuel
+                            )}
+                        </span>
+
+                    </div>
 
 
-        await loadAppointments();
+                    <h3>
+                        ${escapeHTML(
+                            vehicle.make
+                        )}
+                        ${escapeHTML(
+                            vehicle.model
+                        )}
+                    </h3>
 
-        await loadDashboard();
 
-    } catch (error) {
+                    <div class="reg">
+                        ${escapeHTML(
+                            vehicle.registration
+                        )}
+                    </div>
 
-        toast(error.message);
 
-    }
+                    <div class="vehicle-meta">
+
+                        <div>
+
+                            <span>OWNER</span>
+
+                            <b>
+                                ${escapeHTML(
+                                    customer?.name ||
+                                    "Unknown"
+                                )}
+                            </b>
+
+                        </div>
+
+
+                        <div>
+
+                            <span>YEAR</span>
+
+                            <b>
+                                ${vehicle.year}
+                            </b>
+
+                        </div>
+
+
+                        <div>
+
+                            <span>MILEAGE</span>
+
+                            <b>
+                                ${Number(
+                                    vehicle.mileage || 0
+                                ).toLocaleString()}
+                                km
+                            </b>
+
+                        </div>
+
+
+                        <div>
+
+                            <span>COLOR</span>
+
+                            <b>
+                                ${escapeHTML(
+                                    vehicle.color ||
+                                    "—"
+                                )}
+                            </b>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            `;
+
+        }).join("");
 
 }
 
 
-/* =========================================================
+/* =========================
    CUSTOMERS
-========================================================= */
+========================= */
 
-async function loadCustomers() {
-
-    try {
-
-        state.customers =
-            await api(
-                "/api/customers"
-            );
-
-
-        renderCustomers();
-
-    } catch (error) {
-
-        toast(error.message);
-
-    }
-
-}
-
-
-function renderCustomers() {
-
-    const query =
-        (
-            $("customerSearch")?.value ||
-            ""
-        ).toLowerCase();
-
-
-    const rows =
-        state.customers.filter(
-            customer =>
-
-                Object.values(customer)
-                    .some(value =>
-                        String(value)
-                            .toLowerCase()
-                            .includes(query)
-                    )
-        );
-
+function renderCustomers(
+    list = data.customers
+){
 
     $("customerTable").innerHTML =
-        rows.map(customer => `
+        list.length
+
+        ?
+
+        list.map(customer => `
 
             <tr>
 
@@ -890,18 +1062,20 @@ function renderCustomers() {
                     <div class="person">
 
                         <div class="person-avatar">
-                            ${initials(customer.name)}
+
+                            ${initials(
+                                customer.name
+                            )}
+
                         </div>
 
                         <div>
 
                             <b>
-                                ${escapeHTML(customer.name)}
+                                ${escapeHTML(
+                                    customer.name
+                                )}
                             </b>
-
-                            <small>
-                                Customer #${customer.id}
-                            </small>
 
                         </div>
 
@@ -911,992 +1085,326 @@ function renderCustomers() {
 
 
                 <td>
-                    ${escapeHTML(customer.phone)}
+                    ${escapeHTML(
+                        customer.phone
+                    )}
                 </td>
 
 
                 <td>
-                    ${escapeHTML(customer.email || "—")}
+                    ${escapeHTML(
+                        customer.email ||
+                        "—"
+                    )}
                 </td>
 
 
                 <td>
-                    ${escapeHTML(customer.address || "—")}
+                    ${escapeHTML(
+                        customer.address ||
+                        "—"
+                    )}
                 </td>
 
 
                 <td>
-                    <b>
-                        ${customer.vehicle_count}
-                    </b>
+
+                    ${
+                        data.vehicles.filter(
+                            vehicle =>
+                                vehicle.customerId ===
+                                customer.id
+                        ).length
+                    }
+
                 </td>
 
             </tr>
+
+        `).join("")
+
+        :
+
+        `
+
+            <tr>
+
+                <td
+                    colspan="5"
+                    style="text-align:center;padding:30px"
+                >
+                    No customers found.
+                </td>
+
+            </tr>
+
+        `;
+
+}
+
+
+/* =========================
+   TECHNICIANS
+========================= */
+
+function renderMechanics(){
+
+    $("mechanicGrid").innerHTML =
+        data.mechanics.map(mechanic => `
+
+            <div class="info-card">
+
+                <div
+                    style="
+                    display:flex;
+                    justify-content:space-between;
+                    "
+                >
+
+                    <div class="vehicle-art">
+                        👨‍🔧
+                    </div>
+
+                    ${statusBadge(
+                        mechanic.status
+                    )}
+
+                </div>
+
+
+                <h4>
+                    ${escapeHTML(
+                        mechanic.name
+                    )}
+                </h4>
+
+
+                <p>
+
+                    ${escapeHTML(
+                        mechanic.specialization
+                    )}
+
+                    <br>
+
+                    ${mechanic.experience}
+                    years experience
+
+                    <br>
+
+                    ${escapeHTML(
+                        mechanic.phone
+                    )}
+
+                </p>
+
+            </div>
 
         `).join("");
 
 }
 
 
-/* =========================================================
-   VEHICLES
-========================================================= */
-
-async function loadVehicles() {
-
-    try {
-
-        state.vehicles =
-            await api(
-                "/api/vehicles"
-            );
-
-
-        $("vehicleGrid").innerHTML =
-            state.vehicles.map(
-                vehicle => `
-
-                    <article
-                        class="vehicle-card"
-                    >
-
-                        <div class="vehicle-top">
-
-                            <div class="vehicle-icon">
-                                🚘
-                            </div>
-
-                            <span class="status green">
-                                ${escapeHTML(vehicle.fuel)}
-                            </span>
-
-                        </div>
-
-
-                        <h3>
-                            ${escapeHTML(vehicle.make)}
-                            ${escapeHTML(vehicle.model)}
-                        </h3>
-
-
-                        <div class="reg">
-                            ${escapeHTML(vehicle.registration)}
-                        </div>
-
-
-                        <div class="vehicle-meta">
-
-                            <div>
-
-                                <span>
-                                    OWNER
-                                </span>
-
-                                <b>
-                                    ${escapeHTML(vehicle.customer)}
-                                </b>
-
-                            </div>
-
-
-                            <div>
-
-                                <span>
-                                    YEAR
-                                </span>
-
-                                <b>
-                                    ${vehicle.year}
-                                </b>
-
-                            </div>
-
-
-                            <div>
-
-                                <span>
-                                    MILEAGE
-                                </span>
-
-                                <b>
-                                    ${Number(
-                                        vehicle.mileage || 0
-                                    ).toLocaleString()}
-                                    km
-                                </b>
-
-                            </div>
-
-
-                            <div>
-
-                                <span>
-                                    COLOR
-                                </span>
-
-                                <b>
-                                    ${escapeHTML(
-                                        vehicle.color || "—"
-                                    )}
-                                </b>
-
-                            </div>
-
-                        </div>
-
-                    </article>
-
-                `
-            ).join("");
-
-    } catch (error) {
-
-        toast(error.message);
-
-    }
-
-}
-
-
-/* =========================================================
-   MECHANICS
-========================================================= */
-
-async function loadMechanics() {
-
-    try {
-
-        state.mechanics =
-            await api(
-                "/api/mechanics"
-            );
-
-
-        $("mechanicGrid").innerHTML =
-            state.mechanics.map(
-                mechanic => `
-
-                    <article
-                        class="mechanic-card"
-                    >
-
-                        <div class="top">
-
-                            <div class="mechanic-avatar">
-                                👨‍🔧
-                            </div>
-
-                            ${statusBadge(
-                                mechanic.status
-                            )}
-
-                        </div>
-
-
-                        <h3>
-                            ${escapeHTML(
-                                mechanic.name
-                            )}
-                        </h3>
-
-
-                        <p>
-
-                            <b>
-                                ${escapeHTML(
-                                    mechanic.specialization
-                                )}
-                            </b>
-
-                            <br>
-
-                            ${mechanic.experience}
-                            years experience
-
-                            <br>
-
-                            ${escapeHTML(
-                                mechanic.phone
-                            )}
-
-                        </p>
-
-
-                        <span class="skill">
-                            Workshop Technician
-                        </span>
-
-                    </article>
-
-                `
-            ).join("");
-
-    } catch (error) {
-
-        toast(error.message);
-
-    }
-
-}
-
-
-/* =========================================================
+/* =========================
    SERVICES
-========================================================= */
+========================= */
 
-async function loadServices() {
+function renderServices(){
 
-    try {
+    $("serviceGrid").innerHTML =
+        data.services.map(service => `
 
-        state.services =
-            await api(
-                "/api/services"
-            );
+            <div class="info-card">
 
+                <span class="badge b-blue">
+                    ${escapeHTML(
+                        service.category
+                    )}
+                </span>
 
-        $("serviceGrid").innerHTML =
-            state.services.map(
-                service => `
 
-                    <article
-                        class="service-card"
-                    >
+                <h4>
+                    ${escapeHTML(
+                        service.name
+                    )}
+                </h4>
 
-                        <div class="top">
 
-                            <span class="status blue">
-                                ${escapeHTML(
-                                    service.category
-                                )}
-                            </span>
-
-                            <b
-                                style="
-                                    color:#ff5a1f;
-                                    font-size:12px
-                                "
-                            >
-                                ${money(
-                                    service.price
-                                )}
-                            </b>
-
-                        </div>
-
-
-                        <h3>
-                            ${escapeHTML(
-                                service.name
-                            )}
-                        </h3>
-
-
-                        <p>
-
-                            Estimated workshop duration
-
-                            <br>
-
-                            <b>
-                                ${service.duration}
-                                minutes
-                            </b>
-
-                        </p>
-
-                    </article>
-
-                `
-            ).join("");
-
-    } catch (error) {
-
-        toast(error.message);
-
-    }
-
-}
-
-
-/* =========================================================
-   INVOICES
-========================================================= */
-
-async function loadInvoices() {
-
-    try {
-
-        const rows =
-            await api(
-                "/api/invoices"
-            );
-
-
-        const paid =
-            rows
-                .filter(
-                    invoice =>
-                        invoice.payment_status === "Paid"
-                )
-                .reduce(
-                    (sum, invoice) =>
-                        sum +
-                        Number(invoice.total),
-                    0
-                );
-
-
-        const pending =
-            rows
-                .filter(
-                    invoice =>
-                        invoice.payment_status === "Pending"
-                )
-                .reduce(
-                    (sum, invoice) =>
-                        sum +
-                        Number(invoice.total),
-                    0
-                );
-
-
-        $("paidTotal").textContent =
-            money(paid);
-
-
-        $("pendingTotal").textContent =
-            money(pending);
-
-
-        $("invoiceTotal").textContent =
-            rows.length;
-
-
-        $("invoiceTable").innerHTML =
-            rows.map(
-                invoice => `
-
-                    <tr>
-
-                        <td>
-                            <b>
-                                ${escapeHTML(
-                                    invoice.invoice_no
-                                )}
-                            </b>
-                        </td>
-
-                        <td>
-                            ${escapeHTML(
-                                invoice.customer
-                            )}
-                        </td>
-
-                        <td>
-                            ${escapeHTML(
-                                invoice.registration
-                            )}
-                        </td>
-
-                        <td>
-                            ${escapeHTML(
-                                invoice.service
-                            )}
-                        </td>
-
-                        <td>
-                            <b>
-                                ${money(
-                                    invoice.total
-                                )}
-                            </b>
-                        </td>
-
-                        <td>
-                            ${statusBadge(
-                                invoice.payment_status
-                            )}
-                        </td>
-
-                        <td>
-                            ${escapeHTML(
-                                invoice.payment_method
-                            )}
-                        </td>
-
-                    </tr>
-
-                `
-            ).join("");
-
-    } catch (error) {
-
-        toast(error.message);
-
-    }
-
-}
-
-
-/* =========================================================
-   FORMS
-========================================================= */
-
-async function prepareForms() {
-
-    const [
-        customers,
-        vehicles,
-        services,
-        mechanics
-    ] = await Promise.all([
-
-        api("/api/customers"),
-
-        api("/api/vehicles"),
-
-        api("/api/services"),
-
-        api("/api/mechanics")
-
-    ]);
-
-
-    state.customers = customers;
-
-    state.vehicles = vehicles;
-
-    state.services = services;
-
-    state.mechanics = mechanics;
-
-
-    $("aCustomer").innerHTML =
-        customers.map(
-            customer => `
-
-                <option
-                    value="${customer.id}"
-                >
-                    ${escapeHTML(customer.name)}
-                    ·
-                    ${escapeHTML(customer.phone)}
-                </option>
-
-            `
-        ).join("");
-
-
-    $("vCustomer").innerHTML =
-        customers.map(
-            customer => `
-
-                <option
-                    value="${customer.id}"
-                >
-                    ${escapeHTML(customer.name)}
-                </option>
-
-            `
-        ).join("");
-
-
-    $("aService").innerHTML =
-        services.map(
-            service => `
-
-                <option
-                    value="${service.id}"
-                >
-                    ${escapeHTML(service.name)}
-                    ·
+                <p>
                     ${money(service.price)}
-                </option>
+                    ·
+                    ${service.duration}
+                    minutes
+                </p>
 
-            `
-        ).join("");
+            </div>
+
+        `).join("");
+
+}
 
 
-    $("aMechanic").innerHTML =
+/* =========================
+   INVOICES
+========================= */
 
-        `<option value="">
-            Unassigned
-        </option>` +
+function renderInvoices(){
 
-        mechanics
-            .filter(
-                mechanic =>
-                    mechanic.status !== "Busy"
+    const paid =
+        data.invoices.filter(
+            invoice =>
+                invoice.payment === "Paid"
+        );
+
+
+    const pending =
+        data.invoices.filter(
+            invoice =>
+                invoice.payment !== "Paid"
+        );
+
+
+    $("paidTotal").textContent =
+        money(
+            paid.reduce(
+                (sum, invoice) =>
+                    sum + Number(invoice.total),
+                0
             )
-            .map(
-                mechanic => `
+        );
 
-                    <option
-                        value="${mechanic.id}"
-                    >
-                        ${escapeHTML(
-                            mechanic.name
-                        )}
-                        ·
-                        ${escapeHTML(
-                            mechanic.specialization
-                        )}
-                    </option>
 
-                `
+    $("pendingTotal").textContent =
+        money(
+            pending.reduce(
+                (sum, invoice) =>
+                    sum + Number(invoice.total),
+                0
             )
-            .join("");
-
-
-    updateVehiclesForCustomer();
-
-    updateCost();
-
-}
-
-
-function updateVehiclesForCustomer() {
-
-    const customerId =
-        Number(
-            $("aCustomer").value
         );
 
 
-    const vehicles =
-        state.vehicles.filter(
-            vehicle =>
-                vehicle.customer_id ===
-                customerId
-        );
+    $("invoiceTotal").textContent =
+        data.invoices.length;
 
 
-    $("aVehicle").innerHTML =
-        vehicles.length
+    $("invoiceTable").innerHTML =
+        data.invoices.length
 
-            ?
+        ?
 
-            vehicles.map(
-                vehicle => `
+        data.invoices.map(invoice => `
 
-                    <option
-                        value="${vehicle.id}"
-                    >
-                        ${escapeHTML(
-                            vehicle.make
-                        )}
-                        ${escapeHTML(
-                            vehicle.model
-                        )}
+            <tr>
 
-                        ·
+                <td>
+                    ${escapeHTML(invoice.no)}
+                </td>
 
-                        ${escapeHTML(
-                            vehicle.registration
-                        )}
-                    </option>
+                <td>
+                    ${escapeHTML(invoice.customer)}
+                </td>
 
-                `
-            ).join("")
+                <td>
+                    ${escapeHTML(invoice.registration)}
+                </td>
 
-            :
+                <td>
+                    ${escapeHTML(invoice.service)}
+                </td>
 
-            `<option value="">
-                No vehicle registered
-            </option>`;
+                <td>
+                    ${money(invoice.total)}
+                </td>
 
-}
+                <td>
+                    ${statusBadge(
+                        invoice.payment
+                    )}
+                </td>
 
+                <td>
+                    ${escapeHTML(
+                        invoice.method ||
+                        "Cash"
+                    )}
+                </td>
 
-function updateCost() {
+            </tr>
 
-    const service =
-        state.services.find(
-            item =>
-                item.id ===
-                Number(
-                    $("aService").value
-                )
-        );
+        `).join("")
 
+        :
 
-    if (service) {
+        `
 
-        $("aCost").value =
-            service.price;
+            <tr>
 
-    }
+                <td
+                    colspan="7"
+                    style="text-align:center;padding:30px"
+                >
+                    No invoices yet.
+                </td>
 
-}
+            </tr>
 
-
-/* =========================================================
-   MODALS
-========================================================= */
-
-function openModal(id) {
-
-    $(id).classList.add(
-        "show"
-    );
+        `;
 
 }
 
 
-function closeModal(id) {
-
-    $(id).classList.remove(
-        "show"
-    );
-
-}
-
-
-/* =========================================================
-   CREATE APPOINTMENT
-========================================================= */
-
-$("appointmentForm")
-    .addEventListener(
-        "submit",
-        async event => {
-
-            event.preventDefault();
-
-
-            try {
-
-                await api(
-                    "/api/appointments",
-                    {
-
-                        method: "POST",
-
-                        headers: {
-                            "Content-Type":
-                                "application/json"
-                        },
-
-                        body:
-                            JSON.stringify({
-
-                                customer_id:
-                                    Number(
-                                        $("aCustomer")
-                                            .value
-                                    ),
-
-                                vehicle_id:
-                                    Number(
-                                        $("aVehicle")
-                                            .value
-                                    ),
-
-                                service_id:
-                                    Number(
-                                        $("aService")
-                                            .value
-                                    ),
-
-                                mechanic_id:
-                                    $("aMechanic")
-                                        .value
-
-                                        ?
-
-                                        Number(
-                                            $("aMechanic")
-                                                .value
-                                        )
-
-                                        :
-
-                                        null,
-
-                                appointment_date:
-                                    $("aDate")
-                                        .value,
-
-                                appointment_time:
-                                    $("aTime")
-                                        .value,
-
-                                estimated_cost:
-                                    Number(
-                                        $("aCost")
-                                            .value
-                                    ),
-
-                                notes:
-                                    $("aNotes")
-                                        .value
-
-                            })
-
-                    }
-                );
-
-
-                closeModal(
-                    "appointmentModal"
-                );
-
-
-                event.target.reset();
-
-
-                toast(
-                    "✓ Appointment created successfully"
-                );
-
-
-                await loadDashboard();
-
-            } catch (error) {
-
-                toast(error.message);
-
-            }
-
-        }
-    );
-
-
-/* =========================================================
-   CREATE CUSTOMER
-========================================================= */
-
-$("customerForm")
-    .addEventListener(
-        "submit",
-        async event => {
-
-            event.preventDefault();
-
-
-            try {
-
-                await api(
-                    "/api/customers",
-                    {
-
-                        method: "POST",
-
-                        headers: {
-                            "Content-Type":
-                                "application/json"
-                        },
-
-                        body:
-                            JSON.stringify({
-
-                                name:
-                                    $("cName")
-                                        .value,
-
-                                phone:
-                                    $("cPhone")
-                                        .value,
-
-                                email:
-                                    $("cEmail")
-                                        .value,
-
-                                address:
-                                    $("cAddress")
-                                        .value
-
-                            })
-
-                    }
-                );
-
-
-                closeModal(
-                    "customerModal"
-                );
-
-
-                event.target.reset();
-
-
-                toast(
-                    "✓ Customer added successfully"
-                );
-
-
-                await loadCustomers();
-
-                await loadDashboard();
-
-            } catch (error) {
-
-                toast(error.message);
-
-            }
-
-        }
-    );
-
-
-/* =========================================================
-   CREATE VEHICLE
-========================================================= */
-
-$("vehicleForm")
-    .addEventListener(
-        "submit",
-        async event => {
-
-            event.preventDefault();
-
-
-            try {
-
-                await api(
-                    "/api/vehicles",
-                    {
-
-                        method: "POST",
-
-                        headers: {
-                            "Content-Type":
-                                "application/json"
-                        },
-
-                        body:
-                            JSON.stringify({
-
-                                customer_id:
-                                    Number(
-                                        $("vCustomer")
-                                            .value
-                                    ),
-
-                                registration:
-                                    $("vReg")
-                                        .value,
-
-                                make:
-                                    $("vMake")
-                                        .value,
-
-                                model:
-                                    $("vModel")
-                                        .value,
-
-                                year:
-                                    Number(
-                                        $("vYear")
-                                            .value
-                                    ),
-
-                                fuel:
-                                    $("vFuel")
-                                        .value,
-
-                                mileage:
-                                    Number(
-                                        $("vMileage")
-                                            .value ||
-                                        0
-                                    ),
-
-                                color:
-                                    $("vColor")
-                                        .value
-
-                            })
-
-                    }
-                );
-
-
-                closeModal(
-                    "vehicleModal"
-                );
-
-
-                event.target.reset();
-
-
-                toast(
-                    "✓ Vehicle registered successfully"
-                );
-
-
-                await loadVehicles();
-
-                await loadDashboard();
-
-            } catch (error) {
-
-                toast(error.message);
-
-            }
-
-        }
-    );
-
-
-/* =========================================================
+/* =========================
    REPORTS
-========================================================= */
+========================= */
 
-async function renderReports() {
+function renderReports(){
 
-    if (!state.dashboard) {
-
-        await loadDashboard();
-
-    }
+    const total =
+        data.appointments.length;
 
 
-    const stats =
-        state.dashboard.stats;
-
-
-    const completion =
-        stats.total_services
-
-            ?
-
-            Math.round(
-                (
-                    stats.completed /
-                    stats.total_services
-                ) * 100
-            )
-
-            :
-
-            0;
-
-
-    $("reportCompletion")
-        .textContent =
-        completion + "%";
-
-
-    $("reportRevenue")
-        .textContent =
-        money(stats.revenue);
-
-
-    $("reportVehicles")
-        .textContent =
-        stats.vehicles;
-
-
-    const mechanics =
-        await api(
-            "/api/mechanics"
+    const completed =
+        data.appointments.filter(
+            appointment =>
+                appointment.status ===
+                "Completed"
         );
 
 
-    $("reportMechanics")
-        .textContent =
-        mechanics.filter(
+    const completionRate =
+        total
+            ? Math.round(
+                completed.length /
+                total *
+                100
+            )
+            : 0;
+
+
+    $("reportCompletion").textContent =
+        completionRate + "%";
+
+
+    $("reportRevenue").textContent =
+        money(
+            completed.reduce(
+                (sum, appointment) =>
+                    sum +
+                    Number(
+                        appointment.cost || 0
+                    ),
+                0
+            )
+        );
+
+
+    $("reportVehicles").textContent =
+        data.vehicles.length;
+
+
+    $("reportMechanics").textContent =
+        data.mechanics.filter(
             mechanic =>
                 mechanic.status ===
                 "Available"
@@ -1905,158 +1413,902 @@ async function renderReports() {
 }
 
 
-/* =========================================================
-   EVENT HANDLERS
-========================================================= */
+/* =========================
+   MODALS
+========================= */
+
+function openModal(id){
+
+    const modal = $(id);
+
+    if(!modal) return;
+
+    modal.classList.add("show");
+
+
+    if(id === "appointmentModal"){
+
+        $("appointmentForm").reset();
+
+        const today =
+            new Date()
+                .toISOString()
+                .slice(0,10);
+
+        $("aDate").value = today;
+
+        $("aTime").value = "10:00";
+
+    }
+
+
+    if(id === "vehicleModal"){
+
+        $("vCustomer").innerHTML =
+            data.customers
+                .map(customer => `
+
+                    <option
+                        value="${customer.id}"
+                    >
+                        ${escapeHTML(
+                            customer.name
+                        )}
+                    </option>
+
+                `)
+                .join("");
+
+    }
+
+}
+
+
+function closeModal(id){
+
+    $(id)?.classList.remove("show");
+
+}
+
+
+/* =========================
+   CREATE APPOINTMENT
+========================= */
+
+$("appointmentForm")
+    .addEventListener(
+        "submit",
+        function(event){
+
+            event.preventDefault();
+
+
+            const customerName =
+                $("aCustomer")
+                    .value
+                    .trim();
+
+
+            const phone =
+                $("aPhone")
+                    .value
+                    .trim();
+
+
+            const registration =
+                $("aVehicle")
+                    .value
+                    .trim()
+                    .toUpperCase();
+
+
+            const make =
+                $("aMake")
+                    .value
+                    .trim();
+
+
+            const model =
+                $("aModel")
+                    .value
+                    .trim();
+
+
+            const serviceName =
+                $("aService")
+                    .value
+                    .trim();
+
+
+            const mechanic =
+                $("aMechanic")
+                    .value
+                    .trim();
+
+
+            const date =
+                $("aDate")
+                    .value;
+
+
+            const time =
+                $("aTime")
+                    .value;
+
+
+            const cost =
+                Number(
+                    $("aCost")
+                        .value || 0
+                );
+
+
+            const notes =
+                $("aNotes")
+                    .value
+                    .trim();
+
+
+            /* VALIDATION */
+
+            if(!customerName ||
+               !phone ||
+               !registration ||
+               !make ||
+               !model ||
+               !serviceName ||
+               !date ||
+               !time){
+
+                toast(
+                    "Please fill all required fields."
+                );
+
+                return;
+
+            }
+
+
+            /* CHECK VEHICLE BOOKING */
+
+            const existingBooking =
+                data.appointments.find(
+                    appointment =>
+
+                        appointment.registration ===
+                        registration &&
+
+                        appointment.date ===
+                        date &&
+
+                        appointment.time ===
+                        time &&
+
+                        appointment.status !==
+                        "Cancelled"
+                );
+
+
+            if(existingBooking){
+
+                toast(
+                    "This vehicle already has an appointment at this time."
+                );
+
+                return;
+
+            }
+
+
+            /* CUSTOMER */
+
+            let customer =
+                data.customers.find(
+                    item =>
+                        item.phone === phone
+                );
+
+
+            if(!customer){
+
+                customer = {
+
+                    id:Date.now(),
+
+                    name:customerName,
+
+                    phone:phone,
+
+                    email:"",
+
+                    address:""
+
+                };
+
+
+                data.customers.push(
+                    customer
+                );
+
+            }
+
+            else{
+
+                customer.name =
+                    customerName;
+
+            }
+
+
+            /* VEHICLE */
+
+            let vehicle =
+                data.vehicles.find(
+                    item =>
+                        item.registration ===
+                        registration
+                );
+
+
+            if(!vehicle){
+
+                vehicle = {
+
+                    id:Date.now()+1,
+
+                    customerId:
+                        customer.id,
+
+                    registration,
+
+                    make,
+
+                    model,
+
+                    year:
+                        new Date()
+                            .getFullYear(),
+
+                    fuel:"Petrol",
+
+                    mileage:0,
+
+                    color:""
+
+                };
+
+
+                data.vehicles.push(
+                    vehicle
+                );
+
+            }
+
+            else{
+
+                vehicle.customerId =
+                    customer.id;
+
+                vehicle.make =
+                    make || vehicle.make;
+
+                vehicle.model =
+                    model || vehicle.model;
+
+            }
+
+
+            /* SERVICE */
+
+            let service =
+                data.services.find(
+                    item =>
+                        item.name
+                            .toLowerCase() ===
+                        serviceName
+                            .toLowerCase()
+                );
+
+
+            if(!service){
+
+                service = {
+
+                    id:Date.now()+2,
+
+                    name:serviceName,
+
+                    category:"Custom",
+
+                    price:cost,
+
+                    duration:60
+
+                };
+
+
+                data.services.push(
+                    service
+                );
+
+            }
+
+
+            /* APPOINTMENT */
+
+            const appointment = {
+
+                id:Date.now()+3,
+
+                customerId:
+                    customer.id,
+
+                customer:
+                    customer.name,
+
+                phone,
+
+                vehicleId:
+                    vehicle.id,
+
+                registration,
+
+                make:
+                    vehicle.make,
+
+                model:
+                    vehicle.model,
+
+                service:
+                    service.name,
+
+                mechanic,
+
+                date,
+
+                time,
+
+                cost:
+                    cost || service.price,
+
+                status:
+                    "Scheduled",
+
+                notes
+
+            };
+
+
+            data.appointments.push(
+                appointment
+            );
+
+
+            saveData();
+
+
+            closeModal(
+                "appointmentModal"
+            );
+
+
+            toast(
+                "✓ Appointment created successfully"
+            );
+
+
+            renderAll();
+
+        }
+    );
+
+
+/* =========================
+   ADD CUSTOMER
+========================= */
+
+$("customerForm")
+    .addEventListener(
+        "submit",
+        function(event){
+
+            event.preventDefault();
+
+
+            const phone =
+                $("cPhone").value.trim();
+
+
+            if(
+                data.customers.some(
+                    customer =>
+                        customer.phone === phone
+                )
+            ){
+
+                toast(
+                    "Customer with this phone number already exists."
+                );
+
+                return;
+
+            }
+
+
+            data.customers.push({
+
+                id:Date.now(),
+
+                name:
+                    $("cName")
+                        .value
+                        .trim(),
+
+                phone,
+
+                email:
+                    $("cEmail")
+                        .value
+                        .trim(),
+
+                address:
+                    $("cAddress")
+                        .value
+                        .trim()
+
+            });
+
+
+            saveData();
+
+
+            closeModal(
+                "customerModal"
+            );
+
+
+            toast(
+                "✓ Customer added successfully"
+            );
+
+
+            renderAll();
+
+        }
+    );
+
+
+/* =========================
+   ADD VEHICLE
+========================= */
+
+$("vehicleForm")
+    .addEventListener(
+        "submit",
+        function(event){
+
+            event.preventDefault();
+
+
+            const registration =
+                $("vReg")
+                    .value
+                    .trim()
+                    .toUpperCase();
+
+
+            if(
+                data.vehicles.some(
+                    vehicle =>
+                        vehicle.registration ===
+                        registration
+                )
+            ){
+
+                toast(
+                    "Vehicle registration already exists."
+                );
+
+                return;
+
+            }
+
+
+            data.vehicles.push({
+
+                id:Date.now(),
+
+                customerId:
+                    Number(
+                        $("vCustomer")
+                            .value
+                    ),
+
+                registration,
+
+                make:
+                    $("vMake")
+                        .value
+                        .trim(),
+
+                model:
+                    $("vModel")
+                        .value
+                        .trim(),
+
+                year:
+                    Number(
+                        $("vYear")
+                            .value || 2024
+                    ),
+
+                fuel:
+                    $("vFuel")
+                        .value,
+
+                mileage:
+                    Number(
+                        $("vMileage")
+                            .value || 0
+                    ),
+
+                color:
+                    $("vColor")
+                        .value
+                        .trim()
+
+            });
+
+
+            saveData();
+
+
+            closeModal(
+                "vehicleModal"
+            );
+
+
+            toast(
+                "✓ Vehicle registered successfully"
+            );
+
+
+            renderAll();
+
+        }
+    );
+
+
+/* =========================
+   UPDATE APPOINTMENT STATUS
+========================= */
+
+document.addEventListener(
+    "change",
+    function(event){
+
+        if(
+            !event.target.matches(
+                ".status-update"
+            )
+        ){
+
+            return;
+
+        }
+
+
+        const id =
+            Number(
+                event.target.dataset.id
+            );
+
+
+        const appointment =
+            data.appointments.find(
+                item =>
+                    item.id === id
+            );
+
+
+        if(!appointment) return;
+
+
+        const newStatus =
+            event.target.value;
+
+
+        if(!newStatus) return;
+
+
+        appointment.status =
+            newStatus;
+
+
+        /* CREATE INVOICE WHEN COMPLETED */
+
+        if(
+            newStatus === "Completed" &&
+            !data.invoices.some(
+                invoice =>
+                    invoice.appointmentId ===
+                    appointment.id
+            )
+        ){
+
+            data.invoices.push({
+
+                id:Date.now(),
+
+                appointmentId:
+                    appointment.id,
+
+                no:
+                    "INV-" +
+                    String(
+                        Date.now()
+                    ).slice(-6),
+
+                customer:
+                    appointment.customer,
+
+                registration:
+                    appointment.registration,
+
+                service:
+                    appointment.service,
+
+                total:
+                    appointment.cost,
+
+                payment:
+                    "Pending",
+
+                method:
+                    "Cash"
+
+            });
+
+        }
+
+
+        saveData();
+
+
+        toast(
+            "✓ Appointment status updated"
+        );
+
+
+        renderAll();
+
+    }
+);
+
+
+/* =========================
+   SEARCH APPOINTMENTS
+========================= */
+
+function filterAppointments(){
+
+    const query =
+        $("appointmentSearch")
+            .value
+            .toLowerCase();
+
+
+    const status =
+        $("appointmentFilter")
+            .value;
+
+
+    const filtered =
+        data.appointments.filter(
+            appointment => {
+
+                const matchesSearch =
+                    !query ||
+                    Object.values(
+                        appointment
+                    ).some(
+                        value =>
+                            String(value)
+                                .toLowerCase()
+                                .includes(query)
+                    );
+
+
+                const matchesStatus =
+                    !status ||
+                    appointment.status ===
+                    status;
+
+
+                return (
+                    matchesSearch &&
+                    matchesStatus
+                );
+
+            }
+        );
+
+
+    renderAppointments(
+        filtered
+    );
+
+}
+
+
+/* =========================
+   CUSTOMER SEARCH
+========================= */
+
+function filterCustomers(){
+
+    const query =
+        $("customerSearch")
+            .value
+            .toLowerCase();
+
+
+    const filtered =
+        data.customers.filter(
+            customer =>
+                Object.values(
+                    customer
+                ).some(
+                    value =>
+                        String(value)
+                            .toLowerCase()
+                            .includes(query)
+                )
+        );
+
+
+    renderCustomers(
+        filtered
+    );
+
+}
+
+
+/* =========================
+   REFRESH
+========================= */
+
+$("refreshBtn")
+    .addEventListener(
+        "click",
+        function(){
+
+            renderAll();
+
+            toast(
+                "✓ Dashboard refreshed"
+            );
+
+        }
+    );
+
+
+/* =========================
+   MOBILE MENU
+========================= */
+
+$("menuBtn")
+    .addEventListener(
+        "click",
+        function(){
+
+            $("sidebar")
+                .classList
+                .toggle("open");
+
+        }
+    );
+
+
+/* =========================
+   SETTINGS
+========================= */
+
+$("saveSettings")
+    .addEventListener(
+        "click",
+        function(){
+
+            const settings = {
+
+                name:
+                    $("workshopName")
+                        .value,
+
+                location:
+                    $("workshopLocation")
+                        .value
+
+            };
+
+
+            localStorage.setItem(
+                "autopro_settings",
+                JSON.stringify(settings)
+            );
+
+
+            toast(
+                "✓ Settings saved"
+            );
+
+        }
+    );
+
+
+/* =========================
+   CLOSE MODALS
+========================= */
 
 document.addEventListener(
     "click",
-    async event => {
+    function(event){
 
-        const nav =
+        const openButton =
             event.target.closest(
-                ".nav"
+                "[data-open]"
             );
 
 
-        if (nav) {
+        if(openButton){
 
-            showPage(
-                nav.dataset.page
+            openModal(
+                openButton.dataset.open
             );
 
         }
 
 
-        const pageLink =
-            event.target.closest(
-                "[data-page-link]"
-            );
-
-
-        if (pageLink) {
-
-            showPage(
-                pageLink.dataset.pageLink
-            );
-
-        }
-
-
-        const close =
+        const closeButton =
             event.target.closest(
                 "[data-close]"
             );
 
 
-        if (close) {
+        if(closeButton){
 
             closeModal(
-                close.dataset.close
+                closeButton.dataset.close
             );
 
         }
 
 
-        if (
-            event.target.id ===
-                "heroAppointment" ||
-
-            event.target.id ===
-                "appointmentAdd" ||
-
-            event.target.id ===
-                "recentAdd"
-        ) {
-
-            await prepareForms();
-
-
-            $("aDate").value =
-                new Date()
-                    .toISOString()
-                    .slice(0, 10);
-
-
-            $("aTime").value =
-                "10:00";
-
-
-            openModal(
-                "appointmentModal"
-            );
-
-        }
-
-
-        if (
-            event.target.id ===
-            "customerAdd"
-        ) {
-
-            openModal(
-                "customerModal"
-            );
-
-        }
-
-
-        if (
-            event.target.id ===
-            "vehicleAdd"
-        ) {
-
-            await prepareForms();
-
-            openModal(
-                "vehicleModal"
-            );
-
-        }
-
-
-        if (
-            event.target.id ===
-            "refreshBtn"
-        ) {
-
-            await loadDashboard();
-
-            toast(
-                "Dashboard refreshed"
-            );
-
-        }
-
-
-        const statusUpdate =
+        const pageButton =
             event.target.closest(
-                ".status-update"
+                "[data-page-link]"
             );
 
 
-        if (statusUpdate) {
+        if(pageButton){
 
-            await changeStatus(
-
-                Number(
-                    statusUpdate.dataset.id
-                ),
-
-                statusUpdate.value
-
+            showPage(
+                pageButton.dataset.pageLink
             );
 
         }
 
 
-        if (
-            event.target.id ===
-            "saveSettings"
-        ) {
+        const navButton =
+            event.target.closest(
+                ".nav[data-page]"
+            );
 
-            toast(
-                "✓ Workshop settings saved"
+
+        if(navButton){
+
+            showPage(
+                navButton.dataset.page
             );
 
         }
@@ -2065,120 +2317,84 @@ document.addEventListener(
 );
 
 
-/* =========================================================
-   INPUT EVENTS
-========================================================= */
+/* =========================
+   CLOSE MODAL ON BACKDROP
+========================= */
 
-$("aCustomer")
-    .addEventListener(
-        "change",
-        updateVehiclesForCustomer
-    );
+document.addEventListener(
+    "click",
+    function(event){
+
+        if(
+            event.target.classList.contains(
+                "modal"
+            )
+        ){
+
+            event.target.classList.remove(
+                "show"
+            );
+
+        }
+
+    }
+);
 
 
-$("aService")
-    .addEventListener(
-        "change",
-        updateCost
-    );
-
+/* =========================
+   SEARCH EVENTS
+========================= */
 
 $("appointmentSearch")
     .addEventListener(
         "input",
-        renderAppointments
+        filterAppointments
     );
 
 
 $("appointmentFilter")
     .addEventListener(
         "change",
-        renderAppointments
+        filterAppointments
     );
 
 
 $("customerSearch")
     .addEventListener(
         "input",
-        renderCustomers
+        filterCustomers
     );
 
 
-$("globalSearch")
-    .addEventListener(
-        "keydown",
-        event => {
+/* =========================
+   RENDER EVERYTHING
+========================= */
 
-            if (
-                event.key ===
-                "Enter"
-            ) {
+function renderAll(){
 
-                const query =
-                    event.target.value
-                        .trim();
+    renderDashboard();
 
+    renderAppointments();
 
-                if (!query)
-                    return;
+    renderVehicles();
 
+    renderCustomers();
 
-                showPage(
-                    "appointments"
-                );
+    renderMechanics();
 
+    renderServices();
 
-                $("appointmentSearch")
-                    .value =
-                    query;
+    renderInvoices();
+
+    renderReports();
+
+}
 
 
-                renderAppointments();
+/* =========================
+   START APPLICATION
+========================= */
 
-            }
+loadData();
 
-        }
-    );
-
-
-/* =========================================================
-   MODAL OUTSIDE CLICK
-========================================================= */
-
-document
-    .querySelectorAll(".modal")
-    .forEach(modal => {
-
-        modal.addEventListener(
-            "click",
-            event => {
-
-                if (
-                    event.target ===
-                    modal
-                ) {
-
-                    modal.classList
-                        .remove("show");
-
-                }
-
-            }
-        );
-
-    });
-
-
-/* =========================================================
-   INITIAL LOAD
-========================================================= */
-
-(async function initialize() {
-
-    await loadDashboard();
-
-    await loadCustomers();
-
-    await loadVehicles();
-
-})();
+renderAll();

@@ -4,180 +4,131 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>AutoPro Service Hub</title>
+    <title>AutoPro | Service Management</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet"
-    >
+    <link rel="stylesheet" href="style.css">
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <link rel="stylesheet" href="/static/style.css">
 </head>
 
 <body>
 
 <div class="app">
 
-    <!-- ================= SIDEBAR ================= -->
-
-    <aside class="sidebar">
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
 
         <div class="brand">
-
-            <div class="brand-mark">
-                ⚙
-            </div>
+            <div class="brand-mark">A</div>
 
             <div>
-                <strong>Auto<span>Pro</span></strong>
-                <small>Service Hub</small>
+                <strong>AutoPro</strong>
+                <span>Service Hub</span>
+            </div>
+        </div>
+
+        <nav>
+
+            <button class="nav active" data-page="dashboard">
+                <span>⌂</span>
+                Dashboard
+            </button>
+
+            <button class="nav" data-page="appointments">
+                <span>▣</span>
+                Appointments
+            </button>
+
+            <button class="nav" data-page="vehicles">
+                <span>▱</span>
+                Vehicles
+            </button>
+
+            <button class="nav" data-page="customers">
+                <span>♙</span>
+                Customers
+            </button>
+
+            <button class="nav" data-page="mechanics">
+                <span>⚙</span>
+                Technicians
+            </button>
+
+            <button class="nav" data-page="services">
+                <span>◆</span>
+                Services
+            </button>
+
+            <button class="nav" data-page="invoices">
+                <span>▤</span>
+                Invoices
+            </button>
+
+            <button class="nav" data-page="reports">
+                <span>◔</span>
+                Reports
+            </button>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <div class="storage">
+                <span class="dot"></span>
+
+                <div>
+                    <b>Local database</b>
+                    <small>Auto-saved in browser</small>
+                </div>
             </div>
 
-        </div>
-
-
-        <div class="nav-label">
-            WORKSPACE
-        </div>
-
-
-        <button class="nav active" data-page="dashboard">
-            <span>▦</span>
-            Dashboard
-        </button>
-
-        <button class="nav" data-page="appointments">
-            <span>📅</span>
-            Appointments
-        </button>
-
-        <button class="nav" data-page="vehicles">
-            <span>🚘</span>
-            Vehicles
-        </button>
-
-        <button class="nav" data-page="customers">
-            <span>👥</span>
-            Customers
-        </button>
-
-        <button class="nav" data-page="mechanics">
-            <span>🧰</span>
-            Mechanics
-        </button>
-
-
-        <div class="nav-label">
-            OPERATIONS
-        </div>
-
-
-        <button class="nav" data-page="services">
-            <span>🛠</span>
-            Service Catalog
-        </button>
-
-        <button class="nav" data-page="invoices">
-            <span>🧾</span>
-            Invoices
-        </button>
-
-        <button class="nav" data-page="reports">
-            <span>📊</span>
-            Reports
-        </button>
-
-
-        <div class="nav-label">
-            SYSTEM
-        </div>
-
-
-        <button class="nav" data-page="settings">
-            <span>⚙</span>
-            Settings
-        </button>
-
-
-        <div class="sidebar-user">
-
-            <div class="avatar">
-                AD
-            </div>
-
-            <div>
-                <b>Admin</b>
-                <small>Workshop Manager</small>
-            </div>
-
-            <span>•••</span>
+            <button class="nav" data-page="settings">
+                <span>⚙</span>
+                Settings
+            </button>
 
         </div>
 
     </aside>
 
 
-    <!-- ================= MAIN ================= -->
-
+    <!-- MAIN -->
     <main class="main">
 
-
-        <!-- TOPBAR -->
-
+        <!-- TOP BAR -->
         <header class="topbar">
 
-            <div class="mobile-brand">
-                Auto<span>Pro</span>
-            </div>
+            <button class="menu-btn" id="menuBtn">☰</button>
 
-            <div class="page-heading">
-
-                <h1 id="pageTitle">
-                    Dashboard
-                </h1>
-
-                <p id="pageSubtitle">
+            <div>
+                <h1 id="pageTitle">Dashboard</h1>
+                <p id="pageSub">
                     Workshop overview and today's operations
                 </p>
-
             </div>
-
 
             <div class="top-actions">
 
-                <div class="search-wrap">
-
+                <div class="search">
                     <span>⌕</span>
-
-                    <input
-                        id="globalSearch"
-                        placeholder="Search anything..."
-                        autocomplete="off"
-                    >
-
+                    <input id="globalSearch" placeholder="Search...">
                 </div>
 
-
-                <button
-                    class="round-btn"
-                    id="refreshBtn"
-                    title="Refresh"
-                >
+                <button class="icon-btn" id="refreshBtn">
                     ↻
                 </button>
 
+                <button class="profile">
+                    <span>MA</span>
 
-                <button
-                    class="round-btn notification"
-                    title="Notifications"
-                >
-                    🔔
-                    <i></i>
+                    <div>
+                        <b>Manager</b>
+                        <small>Administrator</small>
+                    </div>
                 </button>
 
             </div>
@@ -185,286 +136,158 @@
         </header>
 
 
-        <div class="content">
+        <section class="content">
 
 
-            <!-- =====================================================
-                 DASHBOARD
-            ====================================================== -->
+            <!-- DASHBOARD -->
+            <section class="page active" id="page-dashboard">
 
-            <section
-                class="page active"
-                id="page-dashboard"
-            >
+                <div class="welcome">
 
-                <div class="hero">
-
-                    <div class="hero-copy">
-
-                        <div class="eyebrow">
-                            WORKSHOP CONTROL CENTER
-                        </div>
+                    <div>
+                        <span class="eyebrow">
+                            WORKSHOP OVERVIEW
+                        </span>
 
                         <h2>
-                            Keep every vehicle moving.
+                            Good day, Manager 👋
                         </h2>
 
                         <p>
-                            Manage bookings, technicians, vehicles
-                            and payments from one smart workspace.
+                            Here is what's happening in your workshop today.
                         </p>
-
-
-                        <div class="hero-actions">
-
-                            <button
-                                class="btn primary"
-                                id="heroAppointment"
-                            >
-                                + New Appointment
-                            </button>
-
-                            <button
-                                class="btn ghost-dark"
-                                data-page-link="vehicles"
-                            >
-                                View Vehicles →
-                            </button>
-
-                        </div>
-
                     </div>
 
-
-                    <div class="hero-car">
-                        🚗
-                    </div>
-
-                    <div class="hero-orbit"></div>
+                    <button class="primary" data-open="appointmentModal">
+                        ＋ New Appointment
+                    </button>
 
                 </div>
 
 
                 <!-- STATISTICS -->
+                <div class="stats">
 
-                <div class="stats-grid">
+                    <div class="stat">
 
-                    <article class="stat-card">
-
-                        <div class="stat-top">
-
-                            <div class="stat-icon orange">
-                                🔧
-                            </div>
-
-                            <span class="trend">
-                                +12.5%
-                            </span>
-
+                        <div class="stat-icon orange">
+                            ▣
                         </div>
 
-                        <div
-                            class="stat-number"
-                            id="statTotal"
-                        >
-                            0
+                        <div>
+                            <span>Total Jobs</span>
+                            <b id="statTotal">0</b>
+                            <small>All appointments</small>
                         </div>
 
-                        <div class="stat-label">
-                            Total Services
+                    </div>
+
+
+                    <div class="stat">
+
+                        <div class="stat-icon green">
+                            ✓
                         </div>
 
-                    </article>
-
-
-                    <article class="stat-card">
-
-                        <div class="stat-top">
-
-                            <div class="stat-icon green">
-                                ✓
-                            </div>
-
-                            <span class="trend">
-                                +8.2%
-                            </span>
-
+                        <div>
+                            <span>Completed</span>
+                            <b id="statCompleted">0</b>
+                            <small>Finished jobs</small>
                         </div>
 
-                        <div
-                            class="stat-number"
-                            id="statCompleted"
-                        >
-                            0
+                    </div>
+
+
+                    <div class="stat">
+
+                        <div class="stat-icon blue">
+                            ◷
                         </div>
 
-                        <div class="stat-label">
-                            Completed Jobs
+                        <div>
+                            <span>In Progress</span>
+                            <b id="statProgress">0</b>
+                            <small>Currently servicing</small>
                         </div>
 
-                    </article>
+                    </div>
 
 
-                    <article class="stat-card">
+                    <div class="stat">
 
-                        <div class="stat-top">
-
-                            <div class="stat-icon blue">
-                                ◷
-                            </div>
-
-                            <span class="trend">
-                                LIVE
-                            </span>
-
+                        <div class="stat-icon purple">
+                            ₹
                         </div>
 
-                        <div
-                            class="stat-number"
-                            id="statProgress"
-                        >
-                            0
+                        <div>
+                            <span>Total Revenue</span>
+                            <b id="statRevenue">₹0</b>
+                            <small>Completed jobs</small>
                         </div>
 
-                        <div class="stat-label">
-                            Jobs In Progress
-                        </div>
-
-                    </article>
-
-
-                    <article class="stat-card">
-
-                        <div class="stat-top">
-
-                            <div class="stat-icon yellow">
-                                ₹
-                            </div>
-
-                            <span class="trend">
-                                +15.8%
-                            </span>
-
-                        </div>
-
-                        <div
-                            class="stat-number"
-                            id="statRevenue"
-                        >
-                            ₹0
-                        </div>
-
-                        <div class="stat-label">
-                            Paid Revenue
-                        </div>
-
-                    </article>
+                    </div>
 
                 </div>
 
 
-                <!-- CHART + SCHEDULE -->
+                <!-- CHART + TODAY -->
+                <div class="grid-2">
 
-                <div class="dashboard-grid">
-
-
-                    <article class="panel chart-panel">
+                    <div class="panel">
 
                         <div class="panel-head">
 
                             <div>
-
-                                <h3>
-                                    Service Activity
-                                </h3>
-
-                                <p>
-                                    Daily appointment volume
-                                </p>
-
+                                <h3>Service Activity</h3>
+                                <span>Appointments over the last 7 days</span>
                             </div>
 
-                            <span class="head-chip">
-                                LAST 7 DAYS
-                            </span>
-
                         </div>
 
-
-                        <div class="chart-area">
-
-                            <canvas
-                                id="serviceChart"
-                            ></canvas>
-
+                        <div class="chart-wrap">
+                            <canvas id="serviceChart"></canvas>
                         </div>
 
-                    </article>
+                    </div>
 
 
-                    <article class="panel">
+                    <div class="panel">
 
                         <div class="panel-head">
 
                             <div>
-
-                                <h3>
-                                    Today's Schedule
-                                </h3>
-
-                                <p id="todaySub">
-                                    Loading...
-                                </p>
-
+                                <h3>Today's Schedule</h3>
+                                <span id="todaySub">
+                                    0 appointments
+                                </span>
                             </div>
 
                             <button
-                                class="text-btn"
-                                data-page-link="appointments"
-                            >
-                                View all
+                                class="link-btn"
+                                data-page-link="appointments">
+                                View all →
                             </button>
 
                         </div>
 
+                        <div id="todayList" class="schedule-list"></div>
 
-                        <div
-                            id="todayList"
-                            class="schedule-list"
-                        ></div>
-
-                    </article>
+                    </div>
 
                 </div>
 
 
-                <!-- RECENT SERVICES -->
-
-                <article class="panel table-panel">
+                <!-- RECENT -->
+                <div class="panel">
 
                     <div class="panel-head">
 
                         <div>
-
-                            <h3>
-                                Recent Service Activity
-                            </h3>
-
-                            <p>
-                                Latest workshop jobs
-                            </p>
-
+                            <h3>Recent Appointments</h3>
+                            <span>Latest workshop activity</span>
                         </div>
 
-                        <button
-                            class="btn primary small"
-                            id="recentAdd"
-                        >
-                            + Add Service
-                        </button>
-
                     </div>
-
 
                     <div class="table-scroll">
 
@@ -472,121 +295,72 @@
 
                             <thead>
 
-                                <tr>
-
-                                    <th>Customer</th>
-                                    <th>Vehicle</th>
-                                    <th>Service</th>
-                                    <th>Technician</th>
-                                    <th>Date</th>
-                                    <th>Status</th>
-                                    <th>Amount</th>
-
-                                </tr>
+                            <tr>
+                                <th>Customer</th>
+                                <th>Vehicle</th>
+                                <th>Service</th>
+                                <th>Technician</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Amount</th>
+                            </tr>
 
                             </thead>
 
-
-                            <tbody
-                                id="recentTable"
-                            ></tbody>
+                            <tbody id="recentTable"></tbody>
 
                         </table>
 
                     </div>
 
-                </article>
+                </div>
 
             </section>
 
 
-            <!-- =====================================================
-                 APPOINTMENTS
-            ====================================================== -->
+            <!-- APPOINTMENTS -->
+            <section class="page" id="page-appointments">
 
-            <section
-                class="page"
-                id="page-appointments"
-            >
-
-                <div class="page-head">
+                <div class="section-head">
 
                     <div>
-
-                        <div class="eyebrow">
-                            WORKSHOP OPERATIONS
-                        </div>
-
-                        <h2>
-                            Appointments
-                        </h2>
-
-                        <p>
-                            Schedule, assign and track service jobs.
-                        </p>
-
+                        <h2>Appointments</h2>
+                        <p>Schedule and manage service jobs.</p>
                     </div>
 
-
-                    <button
-                        class="btn primary"
-                        id="appointmentAdd"
-                    >
-                        + New Appointment
+                    <button class="primary" data-open="appointmentModal">
+                        ＋ Add Appointment
                     </button>
 
                 </div>
 
 
-                <article class="panel table-panel">
+                <div class="toolbar">
 
-                    <div class="toolbar">
-
-                        <div class="search-inline">
-
-                            ⌕
-
-                            <input
-                                id="appointmentSearch"
-                                placeholder="Search appointments..."
-                            >
-
-                        </div>
-
-
-                        <select
-                            class="select"
-                            id="appointmentFilter"
-                        >
-
-                            <option value="">
-                                All statuses
-                            </option>
-
-                            <option>
-                                Scheduled
-                            </option>
-
-                            <option>
-                                In Progress
-                            </option>
-
-                            <option>
-                                Ready for Pickup
-                            </option>
-
-                            <option>
-                                Completed
-                            </option>
-
-                            <option>
-                                Cancelled
-                            </option>
-
-                        </select>
-
+                    <div class="search wide">
+                        ⌕
+                        <input
+                            id="appointmentSearch"
+                            placeholder="Search customer, vehicle or service...">
                     </div>
 
+                    <select id="appointmentFilter">
+
+                        <option value="">
+                            All statuses
+                        </option>
+
+                        <option>Scheduled</option>
+                        <option>In Progress</option>
+                        <option>Completed</option>
+                        <option>Cancelled</option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="panel">
 
                     <div class="table-scroll">
 
@@ -594,135 +368,80 @@
 
                             <thead>
 
-                                <tr>
-
-                                    <th>Customer</th>
-                                    <th>Vehicle</th>
-                                    <th>Service</th>
-                                    <th>Date / Time</th>
-                                    <th>Technician</th>
-                                    <th>Status</th>
-                                    <th>Update</th>
-
-                                </tr>
+                            <tr>
+                                <th>Customer</th>
+                                <th>Vehicle</th>
+                                <th>Service</th>
+                                <th>Date / Time</th>
+                                <th>Technician</th>
+                                <th>Status</th>
+                                <th>Update</th>
+                            </tr>
 
                             </thead>
 
-
-                            <tbody
-                                id="appointmentTable"
-                            ></tbody>
+                            <tbody id="appointmentTable"></tbody>
 
                         </table>
 
                     </div>
 
-                </article>
+                </div>
 
             </section>
 
 
-            <!-- =====================================================
-                 VEHICLES
-            ====================================================== -->
+            <!-- VEHICLES -->
+            <section class="page" id="page-vehicles">
 
-            <section
-                class="page"
-                id="page-vehicles"
-            >
-
-                <div class="page-head">
+                <div class="section-head">
 
                     <div>
-
-                        <div class="eyebrow">
-                            FLEET RECORDS
-                        </div>
-
-                        <h2>
-                            Vehicle Garage
-                        </h2>
-
-                        <p>
-                            Every registered vehicle, owner and service profile.
-                        </p>
-
+                        <h2>Vehicle Garage</h2>
+                        <p>Registered vehicles and service profiles.</p>
                     </div>
 
+                    <button class="primary" data-open="vehicleModal">
+                        ＋ Register Vehicle
+                    </button>
 
-                    <button
-                        class="btn primary"
-                        id="vehicleAdd"
-                    >
-                        + Register Vehicle
+                </div>
+
+                <div id="vehicleGrid" class="card-grid"></div>
+
+            </section>
+
+
+            <!-- CUSTOMERS -->
+            <section class="page" id="page-customers">
+
+                <div class="section-head">
+
+                    <div>
+                        <h2>Customers</h2>
+                        <p>Customer profiles and contact details.</p>
+                    </div>
+
+                    <button class="primary" data-open="customerModal">
+                        ＋ Add Customer
                     </button>
 
                 </div>
 
 
-                <div
-                    class="vehicle-grid"
-                    id="vehicleGrid"
-                ></div>
+                <div class="toolbar">
 
-            </section>
-
-
-            <!-- =====================================================
-                 CUSTOMERS
-            ====================================================== -->
-
-            <section
-                class="page"
-                id="page-customers"
-            >
-
-                <div class="page-head">
-
-                    <div>
-
-                        <div class="eyebrow">
-                            CUSTOMER RELATIONSHIP
-                        </div>
-
-                        <h2>
-                            Customers
-                        </h2>
-
-                        <p>
-                            Customer profiles and registered vehicles.
-                        </p>
-
+                    <div class="search wide">
+                        ⌕
+                        <input
+                            id="customerSearch"
+                            placeholder="Search customers...">
                     </div>
-
-
-                    <button
-                        class="btn primary"
-                        id="customerAdd"
-                    >
-                        + Add Customer
-                    </button>
 
                 </div>
 
 
-                <article class="panel table-panel">
-
-                    <div class="toolbar">
-
-                        <div class="search-inline">
-
-                            ⌕
-
-                            <input
-                                id="customerSearch"
-                                placeholder="Search customers..."
-                            >
-
-                        </div>
-
-                    </div>
-
+                <div class="panel">
 
                     <div class="table-scroll">
 
@@ -730,133 +449,69 @@
 
                             <thead>
 
-                                <tr>
-
-                                    <th>Customer</th>
-                                    <th>Phone</th>
-                                    <th>Email</th>
-                                    <th>Location</th>
-                                    <th>Vehicles</th>
-
-                                </tr>
+                            <tr>
+                                <th>Customer</th>
+                                <th>Phone</th>
+                                <th>Email</th>
+                                <th>Address</th>
+                                <th>Vehicles</th>
+                            </tr>
 
                             </thead>
 
-
-                            <tbody
-                                id="customerTable"
-                            ></tbody>
+                            <tbody id="customerTable"></tbody>
 
                         </table>
 
                     </div>
 
-                </article>
+                </div>
 
             </section>
 
 
-            <!-- =====================================================
-                 MECHANICS
-            ====================================================== -->
+            <!-- TECHNICIANS -->
+            <section class="page" id="page-mechanics">
 
-            <section
-                class="page"
-                id="page-mechanics"
-            >
-
-                <div class="page-head">
+                <div class="section-head">
 
                     <div>
-
-                        <div class="eyebrow">
-                            WORKSHOP TEAM
-                        </div>
-
-                        <h2>
-                            Technicians
-                        </h2>
-
-                        <p>
-                            Skills, experience and current availability.
-                        </p>
-
+                        <h2>Technicians</h2>
+                        <p>Workshop team and availability.</p>
                     </div>
 
                 </div>
 
-
-                <div
-                    class="mechanic-grid"
-                    id="mechanicGrid"
-                ></div>
+                <div id="mechanicGrid" class="card-grid"></div>
 
             </section>
 
 
-            <!-- =====================================================
-                 SERVICES
-            ====================================================== -->
+            <!-- SERVICES -->
+            <section class="page" id="page-services">
 
-            <section
-                class="page"
-                id="page-services"
-            >
-
-                <div class="page-head">
+                <div class="section-head">
 
                     <div>
-
-                        <div class="eyebrow">
-                            SERVICE MENU
-                        </div>
-
-                        <h2>
-                            Service Catalog
-                        </h2>
-
-                        <p>
-                            Pricing and estimated workshop duration.
-                        </p>
-
+                        <h2>Service Catalog</h2>
+                        <p>Available services and standard pricing.</p>
                     </div>
 
                 </div>
 
-
-                <div
-                    class="service-grid"
-                    id="serviceGrid"
-                ></div>
+                <div id="serviceGrid" class="card-grid"></div>
 
             </section>
 
 
-            <!-- =====================================================
-                 INVOICES
-            ====================================================== -->
+            <!-- INVOICES -->
+            <section class="page" id="page-invoices">
 
-            <section
-                class="page"
-                id="page-invoices"
-            >
-
-                <div class="page-head">
+                <div class="section-head">
 
                     <div>
-
-                        <div class="eyebrow">
-                            FINANCE
-                        </div>
-
-                        <h2>
-                            Invoices & Payments
-                        </h2>
-
-                        <p>
-                            Monitor workshop billing and collections.
-                        </p>
-
+                        <h2>Invoices & Payments</h2>
+                        <p>Monitor billing and collections.</p>
                     </div>
 
                 </div>
@@ -864,53 +519,25 @@
 
                 <div class="mini-stats">
 
-                    <div class="mini-stat">
-
-                        <span>PAID</span>
-
-                        <b id="paidTotal">
-                            ₹0
-                        </b>
-
+                    <div>
+                        <span>Paid</span>
+                        <b id="paidTotal">₹0</b>
                     </div>
 
-
-                    <div class="mini-stat">
-
-                        <span>PENDING</span>
-
-                        <b id="pendingTotal">
-                            ₹0
-                        </b>
-
+                    <div>
+                        <span>Pending</span>
+                        <b id="pendingTotal">₹0</b>
                     </div>
 
-
-                    <div class="mini-stat">
-
-                        <span>INVOICES</span>
-
-                        <b id="invoiceTotal">
-                            0
-                        </b>
-
-                    </div>
-
-
-                    <div class="mini-stat">
-
-                        <span>GST</span>
-
-                        <b>
-                            18%
-                        </b>
-
+                    <div>
+                        <span>Total Invoices</span>
+                        <b id="invoiceTotal">0</b>
                     </div>
 
                 </div>
 
 
-                <article class="panel table-panel">
+                <div class="panel">
 
                     <div class="table-scroll">
 
@@ -918,59 +545,37 @@
 
                             <thead>
 
-                                <tr>
-
-                                    <th>Invoice</th>
-                                    <th>Customer</th>
-                                    <th>Vehicle</th>
-                                    <th>Service</th>
-                                    <th>Total</th>
-                                    <th>Payment</th>
-                                    <th>Method</th>
-
-                                </tr>
+                            <tr>
+                                <th>Invoice</th>
+                                <th>Customer</th>
+                                <th>Vehicle</th>
+                                <th>Service</th>
+                                <th>Total</th>
+                                <th>Payment</th>
+                                <th>Method</th>
+                            </tr>
 
                             </thead>
 
-
-                            <tbody
-                                id="invoiceTable"
-                            ></tbody>
+                            <tbody id="invoiceTable"></tbody>
 
                         </table>
 
                     </div>
 
-                </article>
+                </div>
 
             </section>
 
 
-            <!-- =====================================================
-                 REPORTS
-            ====================================================== -->
+            <!-- REPORTS -->
+            <section class="page" id="page-reports">
 
-            <section
-                class="page"
-                id="page-reports"
-            >
-
-                <div class="page-head">
+                <div class="section-head">
 
                     <div>
-
-                        <div class="eyebrow">
-                            BUSINESS INTELLIGENCE
-                        </div>
-
-                        <h2>
-                            Workshop Reports
-                        </h2>
-
-                        <p>
-                            Quick operational insights from your service data.
-                        </p>
-
+                        <h2>Workshop Reports</h2>
+                        <p>Quick operational insights.</p>
                     </div>
 
                 </div>
@@ -979,98 +584,27 @@
                 <div class="report-grid">
 
                     <div class="report-card">
-
-                        <span>📈</span>
-
-                        <h3>
-                            Service Performance
-                        </h3>
-
-                        <p>
-                            Track scheduled, active and completed jobs
-                            to understand workshop capacity.
-                        </p>
-
-                        <strong id="reportCompletion">
-                            —
-                        </strong>
-
-                        <small>
-                            completion rate
-                        </small>
-
+                        <span>Completion Rate</span>
+                        <b id="reportCompletion">0%</b>
+                        <small>Completed / total jobs</small>
                     </div>
 
-
                     <div class="report-card">
-
-                        <span>💰</span>
-
-                        <h3>
-                            Revenue
-                        </h3>
-
-                        <p>
-                            Monitor paid revenue and outstanding
-                            invoice value.
-                        </p>
-
-                        <strong id="reportRevenue">
-                            ₹0
-                        </strong>
-
-                        <small>
-                            paid revenue
-                        </small>
-
+                        <span>Completed Revenue</span>
+                        <b id="reportRevenue">₹0</b>
+                        <small>Revenue from completed jobs</small>
                     </div>
 
-
                     <div class="report-card">
-
-                        <span>🚗</span>
-
-                        <h3>
-                            Vehicle Base
-                        </h3>
-
-                        <p>
-                            Understand the size of your registered
-                            customer vehicle base.
-                        </p>
-
-                        <strong id="reportVehicles">
-                            0
-                        </strong>
-
-                        <small>
-                            registered vehicles
-                        </small>
-
+                        <span>Registered Vehicles</span>
+                        <b id="reportVehicles">0</b>
+                        <small>Vehicles in garage</small>
                     </div>
 
-
                     <div class="report-card">
-
-                        <span>👨‍🔧</span>
-
-                        <h3>
-                            Team Capacity
-                        </h3>
-
-                        <p>
-                            Review technician availability before
-                            assigning appointments.
-                        </p>
-
-                        <strong id="reportMechanics">
-                            0
-                        </strong>
-
-                        <small>
-                            available technicians
-                        </small>
-
+                        <span>Available Technicians</span>
+                        <b id="reportMechanics">0</b>
+                        <small>Currently available</small>
                     </div>
 
                 </div>
@@ -1078,337 +612,151 @@
             </section>
 
 
-            <!-- =====================================================
-                 SETTINGS
-            ====================================================== -->
+            <!-- SETTINGS -->
+            <section class="page" id="page-settings">
 
-            <section
-                class="page"
-                id="page-settings"
-            >
-
-                <div class="page-head">
+                <div class="section-head">
 
                     <div>
-
-                        <div class="eyebrow">
-                            SYSTEM
-                        </div>
-
-                        <h2>
-                            Settings
-                        </h2>
-
-                        <p>
-                            Workshop configuration and system information.
-                        </p>
-
+                        <h2>Settings</h2>
+                        <p>Workshop preferences.</p>
                     </div>
 
                 </div>
 
 
-                <div class="settings-grid">
+                <div class="panel settings">
 
-                    <div class="setting-card">
+                    <label>
+                        Workshop Name
+                        <input id="workshopName" value="AutoPro Service Hub">
+                    </label>
 
-                        <span>🏢</span>
+                    <label>
+                        Location
+                        <input id="workshopLocation" value="Bangalore, India">
+                    </label>
 
-                        <h3>
-                            Workshop Profile
-                        </h3>
-
-                        <label>
-                            Workshop name
-                        </label>
-
-                        <input
-                            id="workshopName"
-                            value="AutoPro Service Hub"
-                        >
-
-                        <label>
-                            Business location
-                        </label>
-
-                        <input
-                            id="workshopLocation"
-                            value="Bengaluru, India"
-                        >
-
-                        <button
-                            class="btn primary"
-                            id="saveSettings"
-                        >
-                            Save Changes
-                        </button>
-
-                    </div>
-
-
-                    <div class="setting-card">
-
-                        <span>🗄️</span>
-
-                        <h3>
-                            Database
-                        </h3>
-
-                        <p>
-                            Your FastAPI backend uses SQLite
-                            for persistent local data.
-                        </p>
-
-
-                        <div class="status-row">
-
-                            <b>
-                                Database
-                            </b>
-
-                            <span class="status-pill green">
-                                CONNECTED
-                            </span>
-
-                        </div>
-
-
-                        <div class="status-row">
-
-                            <b>
-                                API
-                            </b>
-
-                            <span class="status-pill green">
-                                ONLINE
-                            </span>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="setting-card">
-
-                        <span>🔔</span>
-
-                        <h3>
-                            Notifications
-                        </h3>
-
-                        <p>
-                            Configure workshop notification preferences.
-                        </p>
-
-
-                        <div class="toggle-row">
-
-                            <b>
-                                Appointment reminders
-                            </b>
-
-                            <input
-                                type="checkbox"
-                                checked
-                            >
-
-                        </div>
-
-
-                        <div class="toggle-row">
-
-                            <b>
-                                Payment alerts
-                            </b>
-
-                            <input
-                                type="checkbox"
-                                checked
-                            >
-
-                        </div>
-
-                    </div>
+                    <button class="primary" id="saveSettings">
+                        Save Settings
+                    </button>
 
                 </div>
 
             </section>
 
-        </div>
+        </section>
 
     </main>
 
 </div>
 
 
-<!-- ============================================================
-     APPOINTMENT MODAL
-============================================================= -->
+<!-- ================= APPOINTMENT MODAL ================= -->
 
-<div
-    class="modal"
-    id="appointmentModal"
->
+<div class="modal" id="appointmentModal">
 
-    <div class="modal-box">
+    <div class="modal-card">
 
         <div class="modal-head">
 
             <div>
-
-                <div class="eyebrow">
-                    NEW JOB
-                </div>
-
-                <h3>
-                    Create Appointment
-                </h3>
-
+                <h3>Add Appointment</h3>
+                <p>Enter appointment information manually.</p>
             </div>
 
-            <button
-                class="close"
-                data-close="appointmentModal"
-            >
+            <button class="close" data-close="appointmentModal">
                 ×
             </button>
 
         </div>
 
 
-        <form
-            id="appointmentForm"
-            class="form-grid"
-        >
+        <form id="appointmentForm">
 
-            <div class="field">
+            <div class="form-grid">
 
                 <label>
-                    CUSTOMER
+                    Customer Name *
+                    <input id="aCustomer" required
+                           placeholder="Mohammed Zia">
                 </label>
 
-                <select
-                    id="aCustomer"
-                    required
-                ></select>
+                <label>
+                    Phone Number *
+                    <input id="aPhone" required
+                           placeholder="9876543210">
+                </label>
+
+                <label>
+                    Vehicle Registration *
+                    <input id="aVehicle" required
+                           placeholder="KA01AB1234">
+                </label>
+
+                <label>
+                    Vehicle Make *
+                    <input id="aMake" required
+                           placeholder="Toyota">
+                </label>
+
+                <label>
+                    Vehicle Model *
+                    <input id="aModel" required
+                           placeholder="Corolla">
+                </label>
+
+                <label>
+                    Service *
+                    <input id="aService" required
+                           placeholder="Engine Service">
+                </label>
+
+                <label>
+                    Technician
+                    <input id="aMechanic"
+                           placeholder="Raj Kumar">
+                </label>
+
+                <label>
+                    Date *
+                    <input id="aDate" type="date" required>
+                </label>
+
+                <label>
+                    Time *
+                    <input id="aTime" type="time" required>
+                </label>
+
+                <label>
+                    Estimated Cost *
+                    <input id="aCost"
+                           type="number"
+                           min="0"
+                           required
+                           placeholder="2500">
+                </label>
+
+                <label class="full">
+                    Notes
+                    <textarea id="aNotes"
+                              rows="3"
+                              placeholder="Additional job details..."></textarea>
+                </label>
 
             </div>
 
 
-            <div class="field">
-
-                <label>
-                    VEHICLE
-                </label>
-
-                <select
-                    id="aVehicle"
-                    required
-                ></select>
-
-            </div>
-
-
-            <div class="field">
-
-                <label>
-                    SERVICE
-                </label>
-
-                <select
-                    id="aService"
-                    required
-                ></select>
-
-            </div>
-
-
-            <div class="field">
-
-                <label>
-                    TECHNICIAN
-                </label>
-
-                <select
-                    id="aMechanic"
-                ></select>
-
-            </div>
-
-
-            <div class="field">
-
-                <label>
-                    DATE
-                </label>
-
-                <input
-                    id="aDate"
-                    type="date"
-                    required
-                >
-
-            </div>
-
-
-            <div class="field">
-
-                <label>
-                    TIME
-                </label>
-
-                <input
-                    id="aTime"
-                    type="time"
-                    required
-                >
-
-            </div>
-
-
-            <div class="field">
-
-                <label>
-                    ESTIMATED COST (₹)
-                </label>
-
-                <input
-                    id="aCost"
-                    type="number"
-                    min="0"
-                    required
-                >
-
-            </div>
-
-
-            <div class="field full">
-
-                <label>
-                    NOTES
-                </label>
-
-                <textarea
-                    id="aNotes"
-                    placeholder="Customer concern or technician instructions..."
-                ></textarea>
-
-            </div>
-
-
-            <div class="modal-actions full">
+            <div class="form-foot">
 
                 <button
                     type="button"
-                    class="btn light"
-                    data-close="appointmentModal"
-                >
+                    class="secondary"
+                    data-close="appointmentModal">
                     Cancel
                 </button>
 
-                <button
-                    class="btn primary"
-                >
+                <button class="primary" type="submit">
                     Create Appointment
                 </button>
 
@@ -1423,108 +771,61 @@
 
 <!-- CUSTOMER MODAL -->
 
-<div
-    class="modal"
-    id="customerModal"
->
+<div class="modal" id="customerModal">
 
-    <div class="modal-box small-modal">
+    <div class="modal-card small">
 
         <div class="modal-head">
 
             <div>
-
-                <div class="eyebrow">
-                    CUSTOMER
-                </div>
-
-                <h3>
-                    Add Customer
-                </h3>
-
+                <h3>Add Customer</h3>
+                <p>Create a customer profile.</p>
             </div>
 
-            <button
-                class="close"
-                data-close="customerModal"
-            >
+            <button class="close" data-close="customerModal">
                 ×
             </button>
 
         </div>
 
 
-        <form
-            id="customerForm"
-            class="form-grid"
-        >
+        <form id="customerForm">
 
-            <div class="field">
+            <div class="form-grid">
 
                 <label>
-                    FULL NAME
+                    Name *
+                    <input id="cName" required>
                 </label>
 
-                <input
-                    id="cName"
-                    required
-                >
+                <label>
+                    Phone *
+                    <input id="cPhone" required>
+                </label>
+
+                <label>
+                    Email
+                    <input id="cEmail" type="email">
+                </label>
+
+                <label>
+                    Address
+                    <input id="cAddress">
+                </label>
 
             </div>
 
 
-            <div class="field">
-
-                <label>
-                    PHONE
-                </label>
-
-                <input
-                    id="cPhone"
-                    required
-                >
-
-            </div>
-
-
-            <div class="field">
-
-                <label>
-                    EMAIL
-                </label>
-
-                <input
-                    id="cEmail"
-                    type="email"
-                >
-
-            </div>
-
-
-            <div class="field">
-
-                <label>
-                    LOCATION
-                </label>
-
-                <input
-                    id="cAddress"
-                >
-
-            </div>
-
-
-            <div class="modal-actions full">
+            <div class="form-foot">
 
                 <button
                     type="button"
-                    class="btn light"
-                    data-close="customerModal"
-                >
+                    class="secondary"
+                    data-close="customerModal">
                     Cancel
                 </button>
 
-                <button class="btn primary">
+                <button class="primary">
                     Save Customer
                 </button>
 
@@ -1539,186 +840,86 @@
 
 <!-- VEHICLE MODAL -->
 
-<div
-    class="modal"
-    id="vehicleModal"
->
+<div class="modal" id="vehicleModal">
 
-    <div class="modal-box">
+    <div class="modal-card">
 
         <div class="modal-head">
 
             <div>
-
-                <div class="eyebrow">
-                    VEHICLE PROFILE
-                </div>
-
-                <h3>
-                    Register Vehicle
-                </h3>
-
+                <h3>Register Vehicle</h3>
+                <p>Add a vehicle to the garage.</p>
             </div>
 
-            <button
-                class="close"
-                data-close="vehicleModal"
-            >
+            <button class="close" data-close="vehicleModal">
                 ×
             </button>
 
         </div>
 
 
-        <form
-            id="vehicleForm"
-            class="form-grid"
-        >
+        <form id="vehicleForm">
 
-            <div class="field">
+            <div class="form-grid">
 
                 <label>
-                    OWNER
+                    Owner *
+                    <select id="vCustomer" required></select>
                 </label>
 
-                <select
-                    id="vCustomer"
-                    required
-                ></select>
+                <label>
+                    Registration *
+                    <input id="vReg" required>
+                </label>
+
+                <label>
+                    Make *
+                    <input id="vMake" required>
+                </label>
+
+                <label>
+                    Model *
+                    <input id="vModel" required>
+                </label>
+
+                <label>
+                    Year
+                    <input id="vYear" type="number" value="2024">
+                </label>
+
+                <label>
+                    Fuel
+                    <select id="vFuel">
+                        <option>Petrol</option>
+                        <option>Diesel</option>
+                        <option>Electric</option>
+                        <option>Hybrid</option>
+                    </select>
+                </label>
+
+                <label>
+                    Mileage
+                    <input id="vMileage" type="number" value="0">
+                </label>
+
+                <label>
+                    Color
+                    <input id="vColor">
+                </label>
 
             </div>
 
 
-            <div class="field">
-
-                <label>
-                    REGISTRATION
-                </label>
-
-                <input
-                    id="vReg"
-                    placeholder="KA01AB1234"
-                    required
-                >
-
-            </div>
-
-
-            <div class="field">
-
-                <label>
-                    MAKE
-                </label>
-
-                <input
-                    id="vMake"
-                    placeholder="Hyundai"
-                    required
-                >
-
-            </div>
-
-
-            <div class="field">
-
-                <label>
-                    MODEL
-                </label>
-
-                <input
-                    id="vModel"
-                    placeholder="Creta"
-                    required
-                >
-
-            </div>
-
-
-            <div class="field">
-
-                <label>
-                    YEAR
-                </label>
-
-                <input
-                    id="vYear"
-                    type="number"
-                    value="2024"
-                >
-
-            </div>
-
-
-            <div class="field">
-
-                <label>
-                    FUEL
-                </label>
-
-                <select id="vFuel">
-
-                    <option>
-                        Petrol
-                    </option>
-
-                    <option>
-                        Diesel
-                    </option>
-
-                    <option>
-                        CNG
-                    </option>
-
-                    <option>
-                        Electric
-                    </option>
-
-                    <option>
-                        Hybrid
-                    </option>
-
-                </select>
-
-            </div>
-
-
-            <div class="field">
-
-                <label>
-                    MILEAGE (KM)
-                </label>
-
-                <input
-                    id="vMileage"
-                    type="number"
-                    value="0"
-                >
-
-            </div>
-
-
-            <div class="field">
-
-                <label>
-                    COLOR
-                </label>
-
-                <input id="vColor">
-
-            </div>
-
-
-            <div class="modal-actions full">
+            <div class="form-foot">
 
                 <button
                     type="button"
-                    class="btn light"
-                    data-close="vehicleModal"
-                >
+                    class="secondary"
+                    data-close="vehicleModal">
                     Cancel
                 </button>
 
-                <button class="btn primary">
+                <button class="primary">
                     Register Vehicle
                 </button>
 
@@ -1731,15 +932,9 @@
 </div>
 
 
-<!-- TOAST -->
+<div class="toast" id="toast"></div>
 
-<div
-    class="toast"
-    id="toast"
-></div>
-
-
-<script src="/static/app.js"></script>
+<script src="script.js"></script>
 
 </body>
 </html>
